@@ -226,7 +226,7 @@ function ThumbWall({ onOpen, className = "" }: { onOpen: OpenFn; className?: str
   const half = Math.ceil(imgs.length / 2);
   const rows = [imgs.slice(0, half).map((src, i) => ({ src, i })), imgs.slice(half).map((src, i) => ({ src, i: i + half }))];
   return (
-    <div className={`relative -mx-7 md:-mx-9 flex flex-col gap-2.5 ${className}`} onClick={(e) => e.stopPropagation()}>
+    <div className={`relative -mx-7 md:-mx-9 flex flex-col gap-1.5 ${className}`} onClick={(e) => e.stopPropagation()}>
       {rows.map((row, r) => (
         <LogoLoop
           key={r}
@@ -236,22 +236,22 @@ function ThumbWall({ onOpen, className = "" }: { onOpen: OpenFn; className?: str
                 type="button"
                 onClick={() => onOpen(i)}
                 aria-label={`View thumbnail ${i + 1}`}
-                className="group/t block cursor-zoom-in overflow-hidden rounded-xl ring-1 ring-white/10 transition-shadow duration-300 hover:ring-2 hover:ring-[var(--x-accent)] hover:shadow-[0_8px_24px_-8px_var(--x-accent)]"
+                className="group/t block cursor-zoom-in overflow-hidden rounded-lg ring-1 ring-white/10 transition-shadow duration-300 hover:ring-2 hover:ring-[var(--x-accent)] hover:shadow-[0_8px_24px_-8px_var(--x-accent)]"
               >
                 <img
                   src={small(src)}
                   alt=""
                   loading="lazy"
                   decoding="async"
-                  className="aspect-video h-[92px] md:h-[110px] w-auto object-cover transition-transform duration-500 group-hover/t:scale-105"
+                  className="aspect-video h-[58px] md:h-[68px] w-auto object-cover transition-transform duration-500 group-hover/t:scale-105"
                 />
               </button>
             ),
           }))}
           speed={r === 0 ? 30 : 24}
           direction={r === 0 ? "left" : "right"}
-          logoHeight={110}
-          gap={10}
+          logoHeight={68}
+          gap={8}
           pauseOnHover
           fadeOut
           fadeOutColor="#1c1c1e"
@@ -278,7 +278,7 @@ export default function ServicesSection({ glow }: { glow: string }) {
             className: `${card} p-7 md:p-9`,
             children: (
               <div className="relative z-[2] flex h-full flex-col">
-                <ThumbWall className="mb-10" onOpen={setViewing} />
+                <ThumbWall className="mb-9" onOpen={setViewing} />
                 <CardHead title={PTR_SUPPORT.title} subtitle={PTR_SUPPORT.subtitle} text={PTR_SUPPORT.text} />
                 <PtrPricing className="mt-auto pt-7" />
               </div>
