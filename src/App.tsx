@@ -672,7 +672,7 @@ function App() {
                   <span className="x-grad-text block">Let's grow it.</span>
                 </h2>
                 <p className="mx-auto mt-6 max-w-xl text-lg font-medium text-[var(--x-games-muted)]">
-                  Tell us about your game and we'll show you where the PTR and LiveOps wins are.
+                  Open to all kinds of deals!
                 </p>
                 <DiscordButton />
               </div>
