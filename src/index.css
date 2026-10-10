@@ -1,0 +1,357 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --animate-star-movement-bottom: star-movement-bottom linear infinite alternate;
+    --animate-star-movement-top: star-movement-top linear infinite alternate;
+    --font-heading: var(--font-heading-family);
+    --font-sans: var(--font-sans-family);
+    --font-mono: var(--font-mono-family);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --color-success: var(--success);
+    --color-success-foreground: var(--success-foreground);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+    --font-sans-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
+    --font-heading-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+    --font-mono-family: "SF Mono", "JetBrains Mono", ui-monospace, monospace;
+
+    --background: #f5f5f7;
+    --foreground: #1d1d1f;
+    --card: #ffffff;
+    --card-foreground: #1d1d1f;
+    --popover: #ffffff;
+    --popover-foreground: #1d1d1f;
+    --primary: #007aff;
+    --primary-foreground: #ffffff;
+    --secondary: #e8e8ed;
+    --secondary-foreground: #1d1d1f;
+    --muted: #f0f0f2;
+    --muted-foreground: #6e6e73;
+    --accent: #e8e8ed;
+    --accent-foreground: #1d1d1f;
+    --destructive: #ff3b30;
+    --border: #d2d2d7;
+    --input: #d2d2d7;
+    --ring: #007aff;
+    --success: #34c759;
+    --success-foreground: #ffffff;
+    --chart-1: #007aff;
+    --chart-2: #34c759;
+    --chart-3: #6e6e73;
+    --chart-4: #ff3b30;
+    --chart-5: #5e5ce6;
+    --radius: 0.9rem;
+    --sidebar: #ffffff;
+    --sidebar-foreground: #1d1d1f;
+    --sidebar-primary: #007aff;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #e8e8ed;
+    --sidebar-accent-foreground: #1d1d1f;
+    --sidebar-border: #d2d2d7;
+    --sidebar-ring: #007aff;
+}
+
+.dark {
+    --background: #000000;
+    --foreground: #f5f5f7;
+    --card: #1c1c1e;
+    --card-foreground: #f5f5f7;
+    --popover: #2c2c2e;
+    --popover-foreground: #f5f5f7;
+    --primary: #0a84ff;
+    --primary-foreground: #ffffff;
+    --secondary: #2c2c2e;
+    --secondary-foreground: #f5f5f7;
+    --muted: #1c1c1e;
+    --muted-foreground: #98989d;
+    --accent: #2c2c2e;
+    --accent-foreground: #f5f5f7;
+    --destructive: #ff453a;
+    --border: rgba(255, 255, 255, 0.1);
+    --input: rgba(255, 255, 255, 0.1);
+    --ring: #0a84ff;
+    --success: #30d158;
+    --success-foreground: #ffffff;
+    --chart-1: #0a84ff;
+    --chart-2: #30d158;
+    --chart-3: #98989d;
+    --chart-4: #ff453a;
+    --chart-5: #5e5ce6;
+    --sidebar: #1c1c1e;
+    --sidebar-foreground: #f5f5f7;
+    --sidebar-primary: #0a84ff;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #2c2c2e;
+    --sidebar-accent-foreground: #f5f5f7;
+    --sidebar-border: rgba(255, 255, 255, 0.1);
+    --sidebar-ring: #0a84ff;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+  html {
+    @apply font-sans;
+    }
+  h1, h2, h3, h4 {
+    @apply font-heading;
+    }
+}
+
+@keyframes star-movement-bottom {
+  0% { transform: translate(0%, 0%); opacity: 1; }
+  100% { transform: translate(-100%, 0%); opacity: 0; }
+}
+
+@keyframes star-movement-top {
+  0% { transform: translate(0%, 0%); opacity: 1; }
+  100% { transform: translate(100%, 0%); opacity: 0; }
+}
+
+@keyframes gradient-text-pan {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.gradient-text-yours {
+  background-image: linear-gradient(90deg, #0a84ff, #64d2ff, #5e5ce6, #0a84ff);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-text-pan 4s linear infinite;
+}
+
+/* Nex Games theme — every page colour/font comes from these vars (canvas colours: THEME in App.tsx) */
+[data-style] {
+    --x-font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
+    --x-font-heading: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+    --x-font-mono: "SF Mono", "JetBrains Mono", ui-monospace, monospace;
+    --x-radius: 1.125rem;
+    --x-heading-weight: 800;
+    --x-heading-case: uppercase;
+    --x-heading-track: -0.03em;
+    font-family: var(--x-font-body);
+}
+
+/* the LiveOps look: black, SF Pro, iOS blue/green/indigo */
+[data-style="liveops"] {
+    --x-bg: #000000; --x-bg2: transparent;
+    --x-fg: #f5f5f7; --x-muted: #98989d; --x-dim: rgba(255, 255, 255, 0.14);
+    --x-sub: #f5f5f7;
+    --x-accent: #0a84ff; --x-accent-hover: #409cff; --x-on-accent: #ffffff;
+    --x-accent-2: #5e5ce6; --x-accent-3: #64d2ff; --x-accent-soft: #4da3ff; --x-accent-rgb: 10, 132, 255;
+    --x-btn-a: #0a6ce6; --x-btn-b: #5e5ce6;
+    --x-grad: linear-gradient(90deg, #0a84ff, #64d2ff, #5e5ce6, #0a84ff);
+    --x-bar: linear-gradient(90deg, #0a84ff, #5e5ce6);
+    --x-line-a: #64d2ff; --x-line-b: #0a84ff;
+    --x-glow: rgba(10, 132, 255, 0.14);
+    --x-nav-bg: rgba(28, 28, 30, 0.72); --x-nav-fg: #f5f5f7; --x-nav-border: rgba(255, 255, 255, 0.1);
+    --x-stat-bg: rgba(28, 28, 30, 0.8); --x-stat-border: rgba(255, 255, 255, 0.1);
+    --x-card: #1c1c1e; --x-card-fg: #f5f5f7; --x-card-muted: #98989d; --x-card-border: rgba(255, 255, 255, 0.1);
+    --x-genre: #0a84ff; --x-ccu: #64d2ff; --x-visits: #ff9f0a;
+    --x-games-fg: #f5f5f7; --x-games-dim: rgba(255, 255, 255, 0.2); --x-games-muted: #98989d;
+}
+
+.x-heading {
+    font-family: var(--x-font-heading);
+    font-weight: var(--x-heading-weight);
+    text-transform: var(--x-heading-case);
+    letter-spacing: var(--x-heading-track);
+}
+
+.x-h1 {
+    font-size: calc(clamp(2.6rem, 6.4vw + 0.4rem, 6.5rem) * var(--x-h1-scale, 1));
+}
+
+.x-grad-text {
+    background-image: var(--x-grad);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradient-text-pan 6s linear infinite;
+}
+
+/* Featured plan: a gradient rim (LiveOps blue → green → indigo) that slowly travels round the
+   border, with a soft glow of the same gradient behind it. */
+@property --rim-angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes rim-spin {
+    to { --rim-angle: 360deg; }
+}
+
+.x-rim {
+    position: relative;
+    isolation: isolate;
+    border: 1.5px solid transparent;
+    background:
+        linear-gradient(var(--x-card), var(--x-card)) padding-box,
+        conic-gradient(from var(--rim-angle), var(--x-accent), var(--x-accent-3), var(--x-accent-2), var(--x-accent) 60%, rgba(255, 255, 255, 0.08) 75%, var(--x-accent)) border-box;
+    animation: rim-spin 5s linear infinite;
+}
+
+.x-rim::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    border-radius: inherit;
+    background: conic-gradient(from var(--rim-angle), var(--x-accent), var(--x-accent-3), var(--x-accent-2), var(--x-accent) 60%, transparent 75%, var(--x-accent));
+    filter: blur(14px);
+    opacity: 0.35;
+    animation: rim-spin 5s linear infinite;
+    transition: opacity 0.3s;
+}
+
+/* re-paint the card fill above the glow (a z-index:-1 child of an isolated element paints over
+   the element's own background, which would tint the inside) */
+.x-rim::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--x-card);
+}
+
+.x-rim:hover::before {
+    opacity: 0.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .x-rim, .x-rim::before { animation: none; }
+}
+
+/* LiveOps Review price: a light glint passes over the number every few seconds. */
+@keyframes price-glint {
+    0%, 70% { background-position: 150% 0; }
+    100%    { background-position: -50% 0; }
+}
+
+.x-price-glint {
+    background-image: linear-gradient(100deg, #ffffff 40%, color-mix(in srgb, var(--x-accent-soft) 55%, white) 48%, #ffffff 56%), linear-gradient(135deg, #ffffff, var(--x-accent-soft));
+    background-size: 250% 100%, 100% 100%;
+    background-blend-mode: multiply;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: price-glint 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .x-price-glint { animation: none; }
+}
+
+/* Silver price text (Weekly PTR plan): white → silver metallic with a glint passing through. */
+@keyframes silver-glint {
+    0%, 65% { background-position: 160% 0, 0 0; }
+    100%    { background-position: -60% 0, 0 0; }
+}
+
+.x-silver-text {
+    background-image:
+        linear-gradient(100deg, transparent 40%, rgba(255, 255, 255, 0.95) 50%, transparent 60%),
+        linear-gradient(180deg, #ffffff 0%, #e5e5ea 45%, #a1a1aa 100%);
+    background-size: 250% 100%, 100% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: silver-glint 4.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .x-silver-text { animation: none; }
+}
+
+/* ── LiveOps Review price box: live chart ─────────────────────────────── */
+@keyframes rv-draw { 0% { stroke-dashoffset: 1; } 55%, 85% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes rv-area { 0%, 25% { opacity: 0; } 55%, 85% { opacity: 1; } 100% { opacity: 0; } }
+.rv-chart { background: var(--x-card); border: 1px solid rgba(255, 255, 255, 0.10); }
+.rv-chart-line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: rv-draw 5s ease-in-out infinite; filter: drop-shadow(0 0 4px rgba(var(--x-accent-rgb), 0.8)); }
+.rv-chart-area { animation: rv-area 5s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+    .rv-chart-line, .rv-chart-area { animation: none; }
+    .rv-chart-line { stroke-dashoffset: 0; }
+}
+
+/* Partial Buyout stake slider: invisible track, white thumb with a blue ring and glow. */
+.x-stake {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    margin: 0;
+}
+.x-stake:focus { outline: none; }
+.x-stake::-webkit-slider-runnable-track { height: 100%; background: transparent; }
+.x-stake::-moz-range-track { height: 100%; background: transparent; }
+.x-stake::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px; height: 22px; margin-top: 1px;
+    border-radius: 9999px;
+    background: #fff;
+    border: 3px solid var(--x-accent);
+    box-shadow: 0 0 0 4px rgba(var(--x-accent-rgb), 0.18), 0 4px 12px rgba(0, 0, 0, 0.5);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.x-stake::-moz-range-thumb {
+    width: 16px; height: 16px;
+    border-radius: 9999px;
+    background: #fff;
+    border: 3px solid var(--x-accent);
+    box-shadow: 0 0 0 4px rgba(var(--x-accent-rgb), 0.18), 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+.x-stake:hover::-webkit-slider-thumb, .x-stake:active::-webkit-slider-thumb { transform: scale(1.12); box-shadow: 0 0 0 6px rgba(var(--x-accent-rgb), 0.25), 0 4px 14px rgba(0, 0, 0, 0.5); }
+.x-stake:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 6px rgba(var(--x-accent-rgb), 0.45); }
