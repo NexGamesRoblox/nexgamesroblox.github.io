@@ -92,6 +92,14 @@ function compact(v: number): { n: number; unit: string } {
 // roproxy mirror; until it answers (or if it fails) show the snapshot from npm run update-stats.
 type LivePlaying = { total: number; byId: Record<string, number> };
 
+// Live counts come from a third-party mirror, so treat the response as untrusted:
+// - only our own universe IDs are read, and only as plain numbers within a sane range
+// - each request times out, failures back off (1 → 2 → 4 → 10 min), and polling pauses while the
+//   tab is hidden, so the page never hammers the API (and can't be used to)
+// - on any problem the last good value (or the build-time snapshot) stays on screen
+const LIVE_URL = "https://games.roproxy.com/v1/games";
+const MAX_PLAYING = 5_000_000; // more than any Roblox game has ever had; anything above is bogus
+
 function useLivePlaying(): LivePlaying {
   const snapshot = (): LivePlaying => ({
     total: data.games.reduce((s, g) => s + g.playing, 0),
@@ -99,21 +107,60 @@ function useLivePlaying(): LivePlaying {
   });
   const [live, setLive] = useState<LivePlaying>(snapshot);
   useEffect(() => {
-    const ids = data.games.map((g) => g.universeId).join(",");
-    const load = () =>
-      fetch(`https://games.roproxy.com/v1/games?universeIds=${ids}`)
-        .then((r) => r.json())
-        .then((j: { data: { id: number; playing: number }[] }) => {
-          if (!j.data?.length) return;
-          setLive({
-            total: j.data.reduce((s, g) => s + g.playing, 0),
-            byId: Object.fromEntries(j.data.map((g) => [String(g.id), g.playing])),
-          });
-        })
-        .catch(() => { /* keep the last value */ });
+    const ours = new Set(data.games.map((g) => g.universeId));
+    const url = `${LIVE_URL}?universeIds=${encodeURIComponent([...ours].join(","))}`;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let failures = 0;
+    let stopped = false;
+
+    const parse = (j: unknown): LivePlaying | null => {
+      const rows = (j as { data?: unknown })?.data;
+      if (!Array.isArray(rows)) return null;
+      const byId: Record<string, number> = {};
+      for (const row of rows) {
+        const id = String((row as { id?: unknown })?.id ?? "");
+        const n = (row as { playing?: unknown })?.playing;
+        if (!ours.has(id) || typeof n !== "number" || !Number.isInteger(n) || n < 0 || n > MAX_PLAYING) continue;
+        byId[id] = n;
+      }
+      if (Object.keys(byId).length === 0) return null;
+      const merged = { ...snapshot().byId, ...byId };
+      return { total: Object.values(merged).reduce((s, n) => s + n, 0), byId: merged };
+    };
+
+    const schedule = (ms: number) => {
+      clearTimeout(timer);
+      if (!stopped) timer = setTimeout(load, ms);
+    };
+
+    const load = async () => {
+      if (document.hidden) return; // resumes on visibilitychange
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 8000);
+      try {
+        const r = await fetch(url, { signal: ctrl.signal, credentials: "omit", referrerPolicy: "no-referrer", cache: "no-store" });
+        if (!r.ok || !(r.headers.get("content-type") ?? "").includes("json")) throw new Error(String(r.status));
+        const next = parse(await r.json());
+        if (!next) throw new Error("bad data");
+        failures = 0;
+        if (!stopped) setLive(next);
+        schedule(60_000);
+      } catch {
+        failures++;
+        schedule(Math.min(60_000 * 2 ** (failures - 1), 600_000));
+      } finally {
+        clearTimeout(t);
+      }
+    };
+
+    const onVisible = () => { if (!document.hidden) schedule(0); };
+    document.addEventListener("visibilitychange", onVisible);
     load();
-    const id = setInterval(load, 60_000);
-    return () => clearInterval(id);
+    return () => {
+      stopped = true;
+      clearTimeout(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, []);
   return live;
 }
