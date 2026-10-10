@@ -13,41 +13,8 @@ const mono = "font-[family-name:var(--x-font-mono)]";
 
 type OpenFn = (index: number) => void;
 
-// how many PTR thumbnails the cards show; the rest are in the viewer
-const PREVIEW = 3;
-
 // 640px preview copy of a PTR image (full size only loads in the viewer)
 const small = (src: string) => src.replace(/\.webp$/, "-sm.webp");
-
-// PTR Support preview: one large thumbnail + two stacked beside it, no overlap so nothing is
-// hidden or cropped (cells keep 16:9). Each opens the viewer at that image; "+N" on the last.
-function ThumbPreview({ className = "", onOpen }: { className?: string; onOpen: OpenFn }) {
-  const thumbs = PTR_SUPPORT.images.slice(0, PREVIEW);
-  const more = PTR_SUPPORT.images.length - thumbs.length;
-  const [main, ...side] = thumbs;
-  const tile = "group/t relative block overflow-hidden rounded-xl ring-1 ring-white/15 shadow-lg cursor-zoom-in";
-  const img = "h-full w-full object-cover transition-transform duration-500 group-hover/t:scale-105";
-  return (
-    <div className={`grid grid-cols-[2fr_1fr] gap-2 ${className}`} onClick={(e) => e.stopPropagation()}>
-      <button type="button" onClick={() => onOpen(0)} aria-label="View thumbnail 1" className={`${tile} row-span-2 aspect-video`}>
-        <img src={small(main)} alt="" loading="lazy" decoding="async" className={img} />
-        <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-[var(--x-btn-a)] px-2.5 py-0.5 text-xs font-bold text-white shadow">
-          <TrendingUp className="h-3.5 w-3.5" /> PTR
-        </span>
-      </button>
-      {side.map((src, j) => {
-        const i = j + 1;
-        const last = i === thumbs.length - 1 && more > 0;
-        return (
-          <button key={src} type="button" onClick={() => onOpen(last ? PREVIEW : i)} aria-label={last ? `View all ${PTR_SUPPORT.images.length} thumbnails` : `View thumbnail ${i + 1}`} className={tile}>
-            <img src={small(src)} alt="" loading="lazy" decoding="async" className={img} />
-            {last && <span className="absolute inset-0 grid place-items-center bg-black/55 text-lg font-bold text-white">+{more}</span>}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
 
 // The two PTR Support price options, side by side; the first is featured (gradient rim + tag). Clicking one goes to Contact.
 function PtrPricing({ className = "" }: { className?: string }) {
@@ -252,51 +219,46 @@ function CardHead({ title, subtitle, text }: { title: string; subtitle?: string;
   );
 }
 
-// Wall of every PTR thumbnail: two rows drifting in opposite directions; hover pauses a row,
-// click opens the viewer on that thumbnail.
-function ThumbWall({ onOpen }: { onOpen: OpenFn }) {
+// Every PTR thumbnail in two rows drifting in opposite directions (top of the PTR Support card).
+// Hover pauses a row; click opens the viewer on that thumbnail. Rows bleed to the card's edges.
+function ThumbWall({ onOpen, className = "" }: { onOpen: OpenFn; className?: string }) {
   const imgs = PTR_SUPPORT.images;
   const half = Math.ceil(imgs.length / 2);
   const rows = [imgs.slice(0, half).map((src, i) => ({ src, i })), imgs.slice(half).map((src, i) => ({ src, i: i + half }))];
   return (
-    <div className="mt-4 overflow-hidden rounded-[var(--x-radius)] border-2 border-[var(--x-card-border)] bg-[var(--x-card)] py-6 md:py-8">
-      <div className="mb-5 flex items-baseline justify-between gap-4 px-6 md:px-9">
-        <h3 className="x-heading !normal-case text-2xl md:text-3xl">Thumbnails we've made</h3>
-        <span className={`${mono} shrink-0 text-xs md:text-sm text-[var(--x-card-muted)]`}>{imgs.length} thumbnails · click to view</span>
-      </div>
-      <div className="flex flex-col gap-3 md:gap-4">
-        {rows.map((row, r) => (
-          <LogoLoop
-            key={r}
-            logos={row.map(({ src, i }) => ({
-              node: (
-                <button
-                  type="button"
-                  onClick={() => onOpen(i)}
-                  aria-label={`View thumbnail ${i + 1}`}
-                  className="group/t block cursor-zoom-in overflow-hidden rounded-xl ring-1 ring-white/10 transition-shadow duration-300 hover:ring-2 hover:ring-[var(--x-accent)] hover:shadow-[0_8px_30px_-8px_var(--x-accent)]"
-                >
-                  <img
-                    src={small(src)}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                    className="aspect-video h-[120px] md:h-[170px] w-auto object-cover transition-transform duration-500 group-hover/t:scale-105"
-                  />
-                </button>
-              ),
-            }))}
-            speed={r === 0 ? 34 : 28}
-            direction={r === 0 ? "left" : "right"}
-            logoHeight={170}
-            gap={14}
-            pauseOnHover
-            fadeOut
-            fadeOutColor="#1c1c1e"
-            ariaLabel={r === 0 ? "Thumbnails, row 1" : "Thumbnails, row 2"}
-          />
-        ))}
-      </div>
+    <div className={`relative -mx-7 md:-mx-9 flex flex-col gap-2.5 ${className}`} onClick={(e) => e.stopPropagation()}>
+      {rows.map((row, r) => (
+        <LogoLoop
+          key={r}
+          logos={row.map(({ src, i }) => ({
+            node: (
+              <button
+                type="button"
+                onClick={() => onOpen(i)}
+                aria-label={`View thumbnail ${i + 1}`}
+                className="group/t block cursor-zoom-in overflow-hidden rounded-xl ring-1 ring-white/10 transition-shadow duration-300 hover:ring-2 hover:ring-[var(--x-accent)] hover:shadow-[0_8px_24px_-8px_var(--x-accent)]"
+              >
+                <img
+                  src={small(src)}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  className="aspect-video h-[92px] md:h-[110px] w-auto object-cover transition-transform duration-500 group-hover/t:scale-105"
+                />
+              </button>
+            ),
+          }))}
+          speed={r === 0 ? 30 : 24}
+          direction={r === 0 ? "left" : "right"}
+          logoHeight={110}
+          gap={10}
+          pauseOnHover
+          fadeOut
+          fadeOutColor="#1c1c1e"
+          ariaLabel={r === 0 ? "Thumbnails we've made, row 1" : "Thumbnails we've made, row 2"}
+        />
+      ))}
+      <span className={`${mono} absolute -bottom-6 right-7 md:right-9 text-[11px] text-[var(--x-card-muted)]`}>{imgs.length} thumbnails · click to view</span>
     </div>
   );
 }
@@ -315,8 +277,8 @@ export default function ServicesSection({ glow }: { glow: string }) {
             key: "ptr",
             className: `${card} p-7 md:p-9`,
             children: (
-              <div className="relative z-[2] flex h-full cursor-pointer flex-col" onClick={() => setViewing(0)}>
-                <ThumbPreview className="mb-6" onOpen={setViewing} />
+              <div className="relative z-[2] flex h-full flex-col">
+                <ThumbWall className="mb-10" onOpen={setViewing} />
                 <CardHead title={PTR_SUPPORT.title} subtitle={PTR_SUPPORT.subtitle} text={PTR_SUPPORT.text} />
                 <PtrPricing className="mt-auto pt-7" />
               </div>
@@ -339,7 +301,6 @@ export default function ServicesSection({ glow }: { glow: string }) {
           },
         ]}
       />
-      <ThumbWall onOpen={setViewing} />
       {/* not offered yet: quieter card (dashed border, no glow/particles, no button) */}
       <div className={`${card} mt-4 flex flex-col gap-3 border-dashed !bg-[color-mix(in_srgb,var(--x-card)_60%,transparent)] p-7 md:flex-row md:items-center md:justify-between md:p-9`}>
         <div>
