@@ -9,7 +9,7 @@ export const PTR_SUPPORT = {
   // pricing options shown on the PTR Support card (USD)
   plans: [
     { key: "weekly", name: "Weekly PTR Support", price: "$150", per: "/ week", note: "Ongoing thumbnail testing and iteration" },
-    { key: "pack", name: "20 AI Thumbnails", price: "$180", per: "one-time", note: "A batch of 20 to test and pick from" },
+    { key: "pack", name: "20 AI Thumbnails", price: "$180", per: "one-time", note: "A batch of 20 Concept Thumbnails." },
   ],
   // thumbnails we've made, shown in the PTR Support visuals (files in public/ptr/)
   images: ["ptr/ptr-1.webp", "ptr/ptr-2.webp", "ptr/ptr-5.webp", "ptr/ptr-3.webp", "ptr/ptr-4.webp", "ptr/ptr-6.webp", "ptr/ptr-7.webp", "ptr/ptr-8.webp", "ptr/ptr-9.webp", "ptr/ptr-10.webp", "ptr/ptr-11.webp", "ptr/ptr-12.webp", "ptr/ptr-13.webp"],
