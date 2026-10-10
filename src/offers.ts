@@ -1,4 +1,4 @@
-import { BarChart3, ClipboardList, Video, Coins, FileCheck2, Filter, Lightbulb, MessagesSquare, MousePointerClick, RefreshCw, Rocket, Scale, UsersRound, type LucideIcon } from "lucide-react";
+import { BarChart3, Video, Coins, FileCheck2, Filter, Lightbulb, MessagesSquare, MousePointerClick, RefreshCw, Rocket, Scale, UsersRound, type LucideIcon } from "lucide-react";
 
 // The services. Edit copy here.
 export const PTR_SUPPORT = {
@@ -26,8 +26,7 @@ export const GAME_REVIEW = {
     { key: "onboarding", title: "Onboarding", text: "Where new players drop off early.", icon: Rocket },
     { key: "funnels", title: "Funnels & retention", text: "Every funnel step, plus D1, D7 and D30.", icon: Filter },
     { key: "mono", title: "Monetization potential", text: "What you earn now vs. what you could.", icon: Coins },
-    { key: "plan", title: "Action plan", text: "A prioritised fix list, backed by data.", icon: ClipboardList },
-    { key: "call", title: "1:1 Call", text: "We go through the findings together.", icon: Video },
+    { key: "call", title: "1:1 Call", text: "Direct feedback and explanations.", icon: Video },
   ] as { key: string; title: string; text: string; icon: LucideIcon }[],
 };
 
