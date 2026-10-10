@@ -379,7 +379,7 @@ export function PartnerSection({ glow }: { glow: string }) {
             className: `${card} p-7 md:p-9 md:row-span-2`,
             children: (
               <div className="relative z-[2] flex h-full flex-col">
-                <CardHead title={LIVEOPS.title} />
+                <CardHead title={LIVEOPS.title} text={LIVEOPS.text} />
                 <div className="mt-6"><ItemList items={LIVEOPS.parts} /></div>
                 <div className="mt-auto pt-6"><OfferButton label="Partner with us" /></div>
               </div>

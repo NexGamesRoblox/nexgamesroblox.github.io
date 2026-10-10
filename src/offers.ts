@@ -34,6 +34,8 @@ export type LiveOpsPart = { key: string; title: string; text: string; icon: Luci
 
 export const LIVEOPS = {
   title: "LiveOps",
+  // why a smaller studio: shown under the title on the LiveOps card
+  text: "We're a newer, smaller studio with full LiveOps capabilities. Large studios put their main resources into their own biggest games. With us, your game is the main focus.",
   parts: [
     { key: "updates", title: "Updates", text: "Planned and shipped on a steady schedule.", icon: RefreshCw },
     { key: "ptr", title: "PTR", text: "Ongoing thumbnail and icon tests.", icon: MousePointerClick },
