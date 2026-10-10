@@ -258,7 +258,7 @@ function ThumbWall({ onOpen, className = "" }: { onOpen: OpenFn; className?: str
           ariaLabel={r === 0 ? "Thumbnails we've made, row 1" : "Thumbnails we've made, row 2"}
         />
       ))}
-      <span className={`${mono} absolute -bottom-6 right-7 md:right-9 text-[11px] text-[var(--x-card-muted)]`}>{imgs.length} thumbnails · click to view</span>
+      <span className={`${mono} absolute -bottom-6 right-7 md:right-9 text-[11px] text-[var(--x-card-muted)]`}>{imgs.length} thumbnails</span>
     </div>
   );
 }
