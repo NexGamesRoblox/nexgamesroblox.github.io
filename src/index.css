@@ -171,12 +171,12 @@
 /* Nex Games theme — every page colour/font comes from these vars (canvas colours: THEME in App.tsx) */
 [data-style] {
     --x-font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
-    --x-font-heading: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+    --x-font-heading: "Outfit", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     --x-font-mono: "SF Mono", "JetBrains Mono", ui-monospace, monospace;
     --x-radius: 1.125rem;
-    --x-heading-weight: 800;
+    --x-heading-weight: 700;
     --x-heading-case: uppercase;
-    --x-heading-track: -0.03em;
+    --x-heading-track: -0.02em;
     font-family: var(--x-font-body);
 }
 
@@ -355,3 +355,12 @@
 }
 .x-stake:hover::-webkit-slider-thumb, .x-stake:active::-webkit-slider-thumb { transform: scale(1.12); box-shadow: 0 0 0 6px rgba(var(--x-accent-rgb), 0.25), 0 4px 14px rgba(0, 0, 0, 0.5); }
 .x-stake:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 6px rgba(var(--x-accent-rgb), 0.45); }
+
+/* nav links glide to their section; anchors stop below the fixed header */
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+}
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+}

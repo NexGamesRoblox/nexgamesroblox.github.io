@@ -132,7 +132,14 @@ function LazyMount({ children, minHeight, margin = "600px" }: { children: ReactN
     if (!("IntersectionObserver" in window)) { setShow(true); return; }
     const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setShow(true); io.disconnect(); } }, { rootMargin: margin });
     io.observe(el);
-    return () => io.disconnect();
+    // also mount once the browser is idle after first paint, so section heights are final before
+    // anyone clicks a nav link (otherwise smooth-scroll targets shift while the page grows)
+    const ric = typeof window.requestIdleCallback === "function";
+    const idle = ric ? window.requestIdleCallback(() => setShow(true), { timeout: 2500 }) : setTimeout(() => setShow(true), 1500);
+    return () => {
+      io.disconnect();
+      if (ric) window.cancelIdleCallback(idle as number); else clearTimeout(idle);
+    };
   }, [show, margin]);
   return (
     <div ref={ref} style={show ? undefined : { minHeight }}>
@@ -293,11 +300,11 @@ function Headline() {
 function SectionTitle({ title, text, fg = "var(--x-games-fg)", muted = "var(--x-games-muted)" }: { title: string; text?: string; fg?: string; muted?: string }) {
   return (
     <FadeContent blur duration={900}>
-      <div className="grid gap-6 md:grid-cols-[1fr_minmax(0,22rem)] md:items-end" style={{ color: fg }}>
-        <h2 className="x-heading !normal-case text-5xl md:text-7xl leading-[1.02]">{title}</h2>
-        {text && <p className="text-base md:text-lg font-medium md:text-right" style={{ color: muted }}>{text}</p>}
+      <div className="flex flex-col items-center text-center" style={{ color: fg }}>
+        <h2 className="x-heading !normal-case text-[2.6rem] sm:text-5xl md:text-7xl leading-[1.02]">{title}</h2>
+        {text && <p className="mt-4 max-w-2xl text-base md:text-lg font-medium" style={{ color: muted }}>{text}</p>}
+        <div className="mt-6 h-[3px] w-16 rounded-full" style={{ background: "var(--x-bar)" }} />
       </div>
-      <div className="mt-8 h-px w-full" style={{ background: "var(--x-stat-border)" }} />
     </FadeContent>
   );
 }
@@ -418,7 +425,9 @@ function App() {
   const live = useLivePlaying();
 
   return (
-    <div data-style="liveops" className="min-h-svh bg-[var(--x-bg)] text-[var(--x-fg)] relative overflow-x-clip">
+    <div
+      data-style="liveops"
+      className="min-h-svh bg-[var(--x-bg)] text-[var(--x-fg)] relative overflow-x-clip">
       <div className="fixed inset-0 z-0">
         <DotField
           dotRadius={2}
@@ -515,7 +524,7 @@ function App() {
           </section>
 
           {/* ── Games ──────────────────────────────────────── */}
-          <section id="games" className="scroll-mt-28 bg-[var(--x-bg2)] transition-colors duration-500">
+          <section id="games" className="bg-[var(--x-bg2)] transition-colors duration-500">
             <div className="mx-auto max-w-6xl px-4 md:px-6 pt-16 md:pt-24 pb-24">
               <SectionTitle
                 title="Our Games"
@@ -541,7 +550,7 @@ function App() {
           </div>
 
           {/* ── Services ───────────────────────────────────── */}
-          <section id="services" className="scroll-mt-28">
+          <section id="services">
             <div className="mx-auto max-w-6xl px-4 md:px-6 pt-10 pb-24">
               <SectionTitle title="Our Services" fg="var(--x-fg)" muted="var(--x-muted)" />
               <LazyMount minHeight={900}><ServicesSection glow={THEME.glow} /></LazyMount>
@@ -549,15 +558,15 @@ function App() {
           </section>
 
           {/* ── How we partner ─────────────────────────────── */}
-          <section id="partner" className="scroll-mt-28">
+          <section id="partner">
             <div className="mx-auto max-w-6xl px-4 md:px-6 pt-4 pb-24">
-              <SectionTitle title="How we partner" fg="var(--x-fg)" muted="var(--x-muted)" />
+              <SectionTitle title="Our Partnership" fg="var(--x-fg)" muted="var(--x-muted)" />
               <LazyMount minHeight={900}><PartnerSection glow={THEME.glow} /></LazyMount>
             </div>
           </section>
 
           {/* ── About ──────────────────────────────────────── */}
-          <section id="about" className="scroll-mt-28">
+          <section id="about">
             <div className="mx-auto max-w-6xl px-4 md:px-6 pt-8 pb-16 md:pb-24">
               <SectionTitle title="About Us" fg="var(--x-fg)" muted="var(--x-muted)" />
               <div className="mt-10 grid gap-10 rounded-[var(--x-radius)] border-2 border-[var(--x-card-border)] bg-[var(--x-card)] p-6 shadow-[0_24px_60px_-30px_rgba(0,0,0,0.6)] md:grid-cols-[1.2fr_1fr] md:gap-16 md:p-10">
@@ -608,7 +617,7 @@ function App() {
           </section>
 
           {/* ── Contact ────────────────────────────────────── */}
-          <section id="contact" className="scroll-mt-28 bg-[var(--x-bg2)] transition-colors duration-500">
+          <section id="contact" className="bg-[var(--x-bg2)] transition-colors duration-500">
             <FadeContent blur duration={900}>
               <div className="mx-auto max-w-4xl px-4 py-24 md:py-32 text-center text-[var(--x-games-fg)]">
                 <h2 className="x-heading text-5xl md:text-7xl leading-[0.95]">
