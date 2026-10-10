@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, ChevronLeft, ChevronRight, TrendingUp, X } from "lucide-react";
 import MagicBento from "@/components/MagicBento";
 import ModernButton from "@/components/ModernButton";
+import LogoLoop from "@/components/LogoLoop";
 import ReviewPriceBox from "@/components/ReviewPriceBox";
 import { BUY_GAME, GAME_REVIEW, LIVEOPS, PARTIAL_BUY, PTR_SUPPORT, SOCIAL_MEDIA } from "@/offers";
 
@@ -251,6 +252,55 @@ function CardHead({ title, subtitle, text }: { title: string; subtitle?: string;
   );
 }
 
+// Wall of every PTR thumbnail: two rows drifting in opposite directions; hover pauses a row,
+// click opens the viewer on that thumbnail.
+function ThumbWall({ onOpen }: { onOpen: OpenFn }) {
+  const imgs = PTR_SUPPORT.images;
+  const half = Math.ceil(imgs.length / 2);
+  const rows = [imgs.slice(0, half).map((src, i) => ({ src, i })), imgs.slice(half).map((src, i) => ({ src, i: i + half }))];
+  return (
+    <div className="mt-4 overflow-hidden rounded-[var(--x-radius)] border-2 border-[var(--x-card-border)] bg-[var(--x-card)] py-6 md:py-8">
+      <div className="mb-5 flex items-baseline justify-between gap-4 px-6 md:px-9">
+        <h3 className="x-heading !normal-case text-2xl md:text-3xl">Thumbnails we've made</h3>
+        <span className={`${mono} shrink-0 text-xs md:text-sm text-[var(--x-card-muted)]`}>{imgs.length} thumbnails · click to view</span>
+      </div>
+      <div className="flex flex-col gap-3 md:gap-4">
+        {rows.map((row, r) => (
+          <LogoLoop
+            key={r}
+            logos={row.map(({ src, i }) => ({
+              node: (
+                <button
+                  type="button"
+                  onClick={() => onOpen(i)}
+                  aria-label={`View thumbnail ${i + 1}`}
+                  className="group/t block cursor-zoom-in overflow-hidden rounded-xl ring-1 ring-white/10 transition-shadow duration-300 hover:ring-2 hover:ring-[var(--x-accent)] hover:shadow-[0_8px_30px_-8px_var(--x-accent)]"
+                >
+                  <img
+                    src={small(src)}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    className="aspect-video h-[120px] md:h-[170px] w-auto object-cover transition-transform duration-500 group-hover/t:scale-105"
+                  />
+                </button>
+              ),
+            }))}
+            speed={r === 0 ? 34 : 28}
+            direction={r === 0 ? "left" : "right"}
+            logoHeight={170}
+            gap={14}
+            pauseOnHover
+            fadeOut
+            fadeOutColor="#1c1c1e"
+            ariaLabel={r === 0 ? "Thumbnails, row 1" : "Thumbnails, row 2"}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // Services: PTR Support + Game Review, side by side.
 export default function ServicesSection({ glow }: { glow: string }) {
   const [viewing, setViewing] = useState<number | null>(null);
@@ -289,6 +339,7 @@ export default function ServicesSection({ glow }: { glow: string }) {
           },
         ]}
       />
+      <ThumbWall onOpen={setViewing} />
       {/* not offered yet: quieter card (dashed border, no glow/particles, no button) */}
       <div className={`${card} mt-4 flex flex-col gap-3 border-dashed !bg-[color-mix(in_srgb,var(--x-card)_60%,transparent)] p-7 md:flex-row md:items-center md:justify-between md:p-9`}>
         <div>
