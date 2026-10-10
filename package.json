@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "update-stats": "node scripts/update-stats.mjs"
+    "update-stats": "node scripts/update-stats.mjs",
+    "deploy": "sh scripts/deploy.sh"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
