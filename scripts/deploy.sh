@@ -14,4 +14,4 @@ git add -A
 git -c user.name="$(git -C "$OLDPWD" config user.name)" -c user.email="$(git -C "$OLDPWD" config user.email)" commit -q -m "Deploy $(date -u +%Y-%m-%dT%H:%MZ)"
 git push -q -f "$REMOTE" gh-pages
 rm -rf "$TMP"
-echo "Deployed. Live in ~1 minute at https://nexgamesroblox.github.io/"
+echo "Deployed. Live in ~1 minute at https://nexgames.dev/"
