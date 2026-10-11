@@ -540,6 +540,16 @@ function App() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 1.1, ease: [0.16, 1, 0.3, 1] }}
             >
+              {/* above the bar: the ask first, then the proof */}
+              <div className="mb-10 flex flex-wrap items-center justify-center gap-3 px-4">
+                <ModernButton href="#partner">Sell Your Game</ModernButton>
+                <a
+                  href="#games"
+                  className="inline-flex h-12 items-center rounded-full px-6 text-[15px] font-semibold text-[var(--x-fg)] ring-1 ring-white/20 bg-white/5 backdrop-blur-sm transition-[transform,background-color,box-shadow] duration-300 hover:-translate-y-px hover:bg-white/10 hover:ring-[var(--x-accent)]"
+                >
+                  See Results
+                </a>
+              </div>
               <LogoLoop
                 logos={data.games.map((g) => {
                   const current = live.byId[g.universeId] ?? g.playing;
@@ -583,16 +593,6 @@ function App() {
                 fadeOutColor={THEME.bg}
                 ariaLabel="Our games"
               />
-              {/* under the bar: proof first, then the ask */}
-              <div className="mt-10 flex flex-wrap items-center justify-center gap-3 px-4">
-                <a
-                  href="#games"
-                  className="inline-flex h-12 items-center rounded-full px-6 text-[15px] font-semibold text-[var(--x-fg)] ring-1 ring-white/20 bg-white/5 backdrop-blur-sm transition-[transform,background-color,box-shadow] duration-300 hover:-translate-y-px hover:bg-white/10 hover:ring-[var(--x-accent)]"
-                >
-                  See Results
-                </a>
-                <ModernButton href="#partner">Sell Your Game</ModernButton>
-              </div>
             </motion.div>
           </section>
 
