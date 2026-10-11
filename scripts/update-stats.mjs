@@ -1,4 +1,4 @@
-// Refreshes src/games.json: visits, genre + thumbnails from the public Roblox API, peak CCU from the
+// Refreshes src/games.json: visits, genre, creation date + thumbnails from the public Roblox API, peak CCU from the
 // LiveOps tool's pulled analytics (only ever raised, since LiveOps keeps the last 28 days).
 // Usage: npm run update-stats
 import fs from "node:fs";
@@ -22,6 +22,7 @@ for (const g of data.games) {
     g.playing = live.playing; // fallback for the live "Playing now" count
     g.peakCcu = Math.max(g.peakCcu, live.playing);
     if (live.genre_l1) g.genre = live.genre_l1;
+    if (live.created) g.created = live.created.slice(0, 10); // for the "Alive since" age
   }
 
   const thumb = thumbs.data.find((x) => String(x.universeId) === g.universeId)?.thumbnails[0];

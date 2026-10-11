@@ -502,7 +502,7 @@ const MagicBento: React.FC<BentoProps> = ({
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             mask-composite: exclude;
             pointer-events: none;
-            z-index: 1;
+            z-index: 3; /* above card content, so edge-to-edge rows (PTR thumbnails) don't hide the rim */
           }
           .card--border-glow:hover {
             box-shadow: 0 0 30px rgba(${glowColor}, 0.2);

@@ -88,6 +88,21 @@ function compact(v: number): { n: number; unit: string } {
   return { n: v, unit: "" };
 }
 
+// How long a game has been live, from its Roblox creation date, always in months: "3 months", "13 months".
+// A started month counts as a full one (2 months 3 weeks shows as 3 months).
+function lifespan(created: string): string {
+  const from = new Date(created);
+  const now = new Date();
+  let months = (now.getFullYear() - from.getFullYear()) * 12 + now.getMonth() - from.getMonth();
+  if (now.getDate() < from.getDate()) months--;
+  if (months < 1 && now.getTime() - from.getTime() < 28 * 864e5) {
+    const weeks = Math.max(1, Math.floor((now.getTime() - from.getTime()) / 6048e5));
+    return `${weeks} ${weeks === 1 ? "week" : "weeks"}`;
+  }
+  if (now.getDate() !== from.getDate() || months < 1) months++;
+  return `${months} ${months === 1 ? "month" : "months"}`;
+}
+
 // Live player counts (per game + total). Roblox's API has no CORS, so read it through the
 // roproxy mirror; until it answers (or if it fails) show the snapshot from npm run update-stats.
 type LivePlaying = { total: number; byId: Record<string, number> };
@@ -400,8 +415,9 @@ function GameRow({ game, index, current }: { game: Game; index: number; current:
           />
         </div>
         <div className="relative flex flex-col gap-2 px-1 pb-1 md:px-0 md:pb-0 text-[var(--x-card-fg)]">
-          <span className={`font-[family-name:var(--x-font-mono)] text-sm font-bold uppercase tracking-wider text-[var(--x-genre)]`}>
-            {game.genre}
+          <span className="flex flex-wrap items-center gap-x-2 font-[family-name:var(--x-font-mono)] text-sm font-bold uppercase tracking-wider">
+            <span className="text-[var(--x-genre)]">{game.genre}</span>
+            <span className="text-[var(--x-card-muted)]">· Alive {lifespan(game.created)}</span>
           </span>
           <h3 className="x-heading !normal-case text-4xl md:text-5xl leading-tight">{game.name}</h3>
           <div className="my-4 h-[3px] w-full rounded-full" style={{ background: "var(--x-bar)" }} />
