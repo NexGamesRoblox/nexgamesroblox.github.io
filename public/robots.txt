@@ -29,3 +29,5 @@ User-agent: Diffbot
 Disallow: /
 User-agent: Omgilibot
 Disallow: /
+
+Sitemap: https://nexgames.dev/sitemap.xml
