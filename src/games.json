@@ -1,27 +1,27 @@
 {
-  "updatedAt": "2026-10-09",
+  "updatedAt": "2026-10-12",
   "games": [
     {
       "name": "+1 Bite Per Click",
       "universeId": "10534873486",
       "placeId": "124731807130219",
       "peakCcu": 21462,
-      "visits": 11678901,
+      "visits": 13118572,
       "thumb": "thumbs/bite.webp",
       "genre": "Simulation",
       "created": "2026-07-20",
-      "playing": 5362
+      "playing": 3683
     },
     {
       "name": "100 Players Lava Escape",
       "universeId": "8965717730",
       "placeId": "135535794227264",
-      "peakCcu": 8500,
-      "visits": 19326364,
+      "peakCcu": 8646,
+      "visits": 20417349,
       "thumb": "thumbs/lava.webp",
       "genre": "Obby & Platformer",
       "created": "2025-10-17",
-      "playing": 2862
+      "playing": 1759
     }
   ]
 }

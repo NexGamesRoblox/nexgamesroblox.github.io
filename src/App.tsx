@@ -103,9 +103,9 @@ function lifespan(created: string): string {
   return `${months} ${months === 1 ? "month" : "months"}`;
 }
 
-// Live player counts (per game + total). Roblox's API has no CORS, so read it through the
+// Live player counts and visits (per game + total). Roblox's API has no CORS, so read it through the
 // roproxy mirror; until it answers (or if it fails) show the snapshot from npm run update-stats.
-type LivePlaying = { total: number; byId: Record<string, number> };
+type LivePlaying = { total: number; byId: Record<string, number>; visits: number; visitsById: Record<string, number> };
 
 // Live counts come from a third-party mirror, so treat the response as untrusted:
 // - only our own universe IDs are read, and only as plain numbers within a sane range
@@ -114,12 +114,15 @@ type LivePlaying = { total: number; byId: Record<string, number> };
 // - on any problem the last good value (or the build-time snapshot) stays on screen
 const LIVE_URL = "https://games.roproxy.com/v1/games";
 const MAX_PLAYING = 5_000_000; // more than any Roblox game has ever had; anything above is bogus
+const MAX_VISITS = 1e11;
+const sum = (r: Record<string, number>) => Object.values(r).reduce((s, n) => s + n, 0);
 
 function useLivePlaying(): LivePlaying {
-  const snapshot = (): LivePlaying => ({
-    total: data.games.reduce((s, g) => s + g.playing, 0),
-    byId: Object.fromEntries(data.games.map((g) => [g.universeId, g.playing])),
-  });
+  const snapshot = (): LivePlaying => {
+    const byId = Object.fromEntries(data.games.map((g) => [g.universeId, g.playing]));
+    const visitsById = Object.fromEntries(data.games.map((g) => [g.universeId, g.visits]));
+    return { total: sum(byId), byId, visits: sum(visitsById), visitsById };
+  };
   const [live, setLive] = useState<LivePlaying>(snapshot);
   useEffect(() => {
     const ours = new Set(data.games.map((g) => g.universeId));
@@ -131,16 +134,24 @@ function useLivePlaying(): LivePlaying {
     const parse = (j: unknown): LivePlaying | null => {
       const rows = (j as { data?: unknown })?.data;
       if (!Array.isArray(rows)) return null;
+      const ok = (n: unknown, max: number): n is number => typeof n === "number" && Number.isInteger(n) && n >= 0 && n <= max;
       const byId: Record<string, number> = {};
+      const visitsById: Record<string, number> = {};
       for (const row of rows) {
         const id = String((row as { id?: unknown })?.id ?? "");
+        if (!ours.has(id)) continue;
         const n = (row as { playing?: unknown })?.playing;
-        if (!ours.has(id) || typeof n !== "number" || !Number.isInteger(n) || n < 0 || n > MAX_PLAYING) continue;
-        byId[id] = n;
+        const v = (row as { visits?: unknown })?.visits;
+        if (ok(n, MAX_PLAYING)) byId[id] = n;
+        if (ok(v, MAX_VISITS)) visitsById[id] = v;
       }
-      if (Object.keys(byId).length === 0) return null;
-      const merged = { ...snapshot().byId, ...byId };
-      return { total: Object.values(merged).reduce((s, n) => s + n, 0), byId: merged };
+      if (Object.keys(byId).length === 0 && Object.keys(visitsById).length === 0) return null;
+      const base = snapshot();
+      const mergedPlaying = { ...base.byId, ...byId };
+      // visits only ever go up; never drop below the build-time snapshot
+      const mergedVisits = { ...base.visitsById };
+      for (const [id, v] of Object.entries(visitsById)) mergedVisits[id] = Math.max(mergedVisits[id], v);
+      return { total: sum(mergedPlaying), byId: mergedPlaying, visits: sum(mergedVisits), visitsById: mergedVisits };
     };
 
     const schedule = (ms: number) => {
@@ -386,11 +397,11 @@ function GameStat({ value, unit, label, live }: { value: number; unit: string; l
 }
 
 // One big showcase card per game: tilting thumbnail + headline stats, sides alternate.
-function GameRow({ game, index, current }: { game: Game; index: number; current: number }) {
+function GameRow({ game, index, current, visitCount }: { game: Game; index: number; current: number; visitCount: number }) {
   const now = compact(current);
   // the stored peak is from LiveOps' last 28 days, so never show it below what's live right now
   const ccu = compact(Math.max(game.peakCcu, current));
-  const visits = compact(game.visits);
+  const visits = compact(visitCount);
   const flip = index % 2 === 1;
   return (
     <FadeContent blur duration={900}>
@@ -484,8 +495,8 @@ function Footer({ visits, playing, games }: { visits: number; playing: number; g
 }
 
 function App() {
-  const totalVisits = data.games.reduce((s, g) => s + g.visits, 0);
   const live = useLivePlaying();
+  const totalVisits = live.visits;
 
   return (
     <div
@@ -554,7 +565,7 @@ function App() {
                 logos={data.games.map((g) => {
                   const current = live.byId[g.universeId] ?? g.playing;
                   const ccu = compact(Math.max(g.peakCcu, current));
-                  const v = compact(g.visits);
+                  const v = compact(live.visitsById[g.universeId] ?? g.visits);
                   // hover: image dims + blurs, the name lifts away and the game's numbers rise in
                   return {
                   node: (
@@ -604,7 +615,7 @@ function App() {
               />
               <div className="mt-12 flex flex-col gap-6 md:gap-8">
                 {data.games.map((g, i) => (
-                  <GameRow key={g.universeId} game={g} index={i} current={live.byId[g.universeId] ?? g.playing} />
+                  <GameRow key={g.universeId} game={g} index={i} current={live.byId[g.universeId] ?? g.playing} visitCount={live.visitsById[g.universeId] ?? g.visits} />
                 ))}
               </div>
             </div>
