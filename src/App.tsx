@@ -14,6 +14,12 @@ import data from "@/games.json";
 
 type Game = (typeof data.games)[number];
 
+// Sold games keep a card with live stats but stay out of the totals (visits, playing now, live games).
+const activeGames = data.games.filter((g) => !("sold" in g));
+const activeIds = new Set(activeGames.map((g) => g.universeId));
+const sumActive = (r: Record<string, number>) => sum(Object.fromEntries(Object.entries(r).filter(([id]) => activeIds.has(id))));
+const isSold = (g: Game) => "sold" in g;
+
 // Electric theme (blue, analogous). Page colours are CSS vars in index.css under [data-style="liveops"];
 // this holds what CSS can't reach (canvas/WebGL colours, glow rgb, games-bar fade).
 const THEME = {
@@ -121,7 +127,7 @@ function useLivePlaying(): LivePlaying {
   const snapshot = (): LivePlaying => {
     const byId = Object.fromEntries(data.games.map((g) => [g.universeId, g.playing]));
     const visitsById = Object.fromEntries(data.games.map((g) => [g.universeId, g.visits]));
-    return { total: sum(byId), byId, visits: sum(visitsById), visitsById };
+    return { total: sumActive(byId), byId, visits: sumActive(visitsById), visitsById };
   };
   const [live, setLive] = useState<LivePlaying>(snapshot);
   useEffect(() => {
@@ -151,7 +157,7 @@ function useLivePlaying(): LivePlaying {
       // visits only ever go up; never drop below the build-time snapshot
       const mergedVisits = { ...base.visitsById };
       for (const [id, v] of Object.entries(visitsById)) mergedVisits[id] = Math.max(mergedVisits[id], v);
-      return { total: sum(mergedPlaying), byId: mergedPlaying, visits: sum(mergedVisits), visitsById: mergedVisits };
+      return { total: sumActive(mergedPlaying), byId: mergedPlaying, visits: sumActive(mergedVisits), visitsById: mergedVisits };
     };
 
     const schedule = (ms: number) => {
@@ -402,6 +408,7 @@ function GameRow({ game, index, current, visitCount }: { game: Game; index: numb
   // the stored peak is from LiveOps' last 28 days, so never show it below what's live right now
   const ccu = compact(Math.max(game.peakCcu, current));
   const visits = compact(visitCount);
+  const sold = isSold(game);
   const flip = index % 2 === 1;
   return (
     <FadeContent blur duration={900}>
@@ -428,7 +435,7 @@ function GameRow({ game, index, current, visitCount }: { game: Game; index: numb
         <div className="relative flex flex-col gap-2 px-1 pb-1 md:px-0 md:pb-0 text-[var(--x-card-fg)]">
           <span className="flex flex-wrap items-center gap-x-2 font-[family-name:var(--x-font-mono)] text-sm font-bold uppercase tracking-wider">
             <span className="text-[var(--x-genre)]">{game.genre}</span>
-            <span className="text-[var(--x-card-muted)]">· Alive {lifespan(game.created)}</span>
+            <span className="text-[var(--x-card-muted)]">· {sold ? "Built & sold" : `Alive ${lifespan(game.created)}`}</span>
           </span>
           <h3 className="x-heading !normal-case text-4xl md:text-5xl leading-tight">{game.name}</h3>
           <div className="my-4 h-[3px] w-full rounded-full" style={{ background: "var(--x-bar)" }} />
@@ -443,7 +450,7 @@ function GameRow({ game, index, current, visitCount }: { game: Game; index: numb
             rel="noreferrer"
             className="mt-6 inline-flex w-fit items-center gap-1.5 rounded-full bg-[var(--x-btn-a)] px-5 py-2.5 text-sm font-semibold text-[var(--x-on-accent)] transition-[filter] hover:brightness-110"
           >
-            Play on Roblox <ArrowUpRight className="h-4 w-4" />
+            {sold ? "View on Roblox" : "Play on Roblox"} <ArrowUpRight className="h-4 w-4" />
           </a>
         </div>
       </div>
@@ -540,7 +547,7 @@ function App() {
               <div className="mt-12 md:mt-16 flex items-start justify-center divide-x divide-[var(--x-stat-border)]">
                 <HeroStat value={totalVisits} label="Total visits" suffix="+" delay={0.7} />
                 <HeroStat value={live.total} label="Playing now" delay={0.8} live />
-                <HeroStat value={data.games.length} label="Live games" delay={0.9} />
+                <HeroStat value={activeGames.length} label="Live games" delay={0.9} />
               </div>
             </div>
 
@@ -717,7 +724,7 @@ function App() {
           </section>
         </main>
 
-        <Footer visits={totalVisits} playing={live.total} games={data.games.length} />
+        <Footer visits={totalVisits} playing={live.total} games={activeGames.length} />
       </div>
 
     </div>
