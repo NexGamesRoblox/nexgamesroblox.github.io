@@ -3,10 +3,8 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, ChevronLeft, ChevronRight, TrendingUp, X } from "lucide-react";
 import MagicBento from "@/components/MagicBento";
-import ModernButton from "@/components/ModernButton";
 import LogoLoop from "@/components/LogoLoop";
-import ReviewPriceBox from "@/components/ReviewPriceBox";
-import { BUY_GAME, GAME_REVIEW, LIVEOPS, PARTIAL_BUY, PTR_SUPPORT, SOCIAL_MEDIA } from "@/offers";
+import { AD_INVEST, BUY_GAME, LIVEOPS, PARTIAL_BUY, PTR_SUPPORT, SOCIAL_MEDIA } from "@/offers";
 
 const card = "rounded-[var(--x-radius)] border-2 border-[var(--x-card-border)] bg-[var(--x-card)] text-[var(--x-card-fg)]";
 const mono = "font-[family-name:var(--x-font-mono)]";
@@ -47,6 +45,29 @@ function PtrPricing({ className = "" }: { className?: string }) {
           <span className="mt-1 text-xs text-[var(--x-card-muted)]">{p.note}</span>
         </a>
       ))}
+    </div>
+  );
+}
+
+// Ad Investment deal: the ad credits we put in (featured, like the top PTR plan) next to the stake we take.
+function AdDeal({ className = "" }: { className?: string }) {
+  const { give, take } = AD_INVEST;
+  return (
+    <div className={`grid gap-3 pt-2 sm:grid-cols-2 ${className}`}>
+      <div className="x-rim relative flex flex-col rounded-[calc(var(--x-radius)*0.7)] p-4">
+        <span className="text-sm font-semibold">{give.label}</span>
+        <span className="mt-1 flex flex-wrap items-baseline gap-x-1.5">
+          <span className="x-heading x-silver-text !normal-case !tracking-tight whitespace-nowrap text-3xl leading-[1.15] tabular-nums drop-shadow-[0_0_12px_rgba(255,255,255,0.18)]">{give.value}</span>
+          <span className="text-sm text-[var(--x-card-muted)]">{give.unit}</span>
+        </span>
+      </div>
+      <div className="relative flex flex-col rounded-[calc(var(--x-radius)*0.7)] border border-[var(--x-card-border)] p-4">
+        <span className="text-sm font-semibold">{take.label}</span>
+        <span className="mt-1 flex items-baseline gap-1.5">
+          <span className="x-heading !normal-case !tracking-normal text-3xl tabular-nums text-[var(--x-genre)]">{take.value}</span>
+          <span className="text-sm text-[var(--x-card-muted)]">{take.unit}</span>
+        </span>
+      </div>
     </div>
   );
 }
@@ -191,13 +212,14 @@ function OfferButton({ label }: { label: string }) {
 type Item = { key: string; title: string; text: string; icon: React.ComponentType<{ className?: string }> };
 
 
-// "What's included" list used by the LiveOps Review, LiveOps and Buy Your Game cards.
+// "What's included" list used by the Ad Investment, LiveOps and Buy Your Game cards.
 // oneLine (Our Services only) keeps each description on a single line from tablet width up.
-function ItemList({ items, oneLine = false }: { items: Item[]; oneLine?: boolean }) {
+// compact (Ad Investment) uses tighter rows so the card stays as short as PTR Support.
+function ItemList({ items, oneLine = false, compact = false }: { items: Item[]; oneLine?: boolean; compact?: boolean }) {
   return (
     <ul className="divide-y divide-[var(--x-card-border)] border-t border-[var(--x-card-border)]">
       {items.map(({ key, title, text, icon: Icon }) => (
-        <li key={key} className="flex items-start gap-3 py-4">
+        <li key={key} className={`flex items-start gap-3 ${compact ? "py-3" : "py-4"}`}>
           <Icon className="mt-0.5 h-5 w-5 shrink-0 text-[var(--x-accent)]" />
           <div className="min-w-0">
             <div className="font-semibold">{title}</div>
@@ -262,7 +284,7 @@ function ThumbWall({ onOpen, className = "" }: { onOpen: OpenFn; className?: str
   );
 }
 
-// Services: PTR Support + Game Review, side by side.
+// Services: PTR Support + Ad Investment, side by side.
 export default function ServicesSection({ glow }: { glow: string }) {
   const [viewing, setViewing] = useState<number | null>(null);
   return (
@@ -284,17 +306,14 @@ export default function ServicesSection({ glow }: { glow: string }) {
             ),
           },
           {
-            key: "review",
+            key: "invest",
             className: `${card} p-7 md:p-9`,
             children: (
               <div className="relative z-[2] flex h-full flex-col">
-                <CardHead title={GAME_REVIEW.title} subtitle={GAME_REVIEW.subtitle} />
-                <div className="mt-6"><ItemList items={GAME_REVIEW.parts} oneLine /></div>
-                <div className="mt-auto pt-6">
-                  <ReviewPriceBox price={GAME_REVIEW.price}>
-                    <ModernButton href="#contact" onClick={(e) => e.stopPropagation()}>{GAME_REVIEW.cta}</ModernButton>
-                  </ReviewPriceBox>
-                </div>
+                <CardHead title={AD_INVEST.title} text={AD_INVEST.text} />
+                <div className="mt-5"><ItemList items={AD_INVEST.points} compact /></div>
+                <AdDeal className="mt-auto pt-5" />
+                <div className="pt-5"><OfferButton label={AD_INVEST.cta} /></div>
               </div>
             ),
           },

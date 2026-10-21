@@ -1,4 +1,4 @@
-import { BarChart3, Video, Coins, FileCheck2, Filter, Lightbulb, MessagesSquare, MousePointerClick, RefreshCw, Rocket, Scale, UsersRound, type LucideIcon } from "lucide-react";
+import { BarChart3, Boxes, Handshake, Layers, Network, Video, Coins, FileCheck2, Filter, Lightbulb, MessagesSquare, MousePointerClick, RefreshCw, Rocket, Scale, UsersRound, type LucideIcon } from "lucide-react";
 
 // The services. Edit copy here.
 export const PTR_SUPPORT = {
@@ -62,6 +62,22 @@ export const PARTIAL_BUY = {
   min: 30,
   max: 80,
   cta: "Get an offer",
+};
+
+// Ad Investment: we fund a game's ads for a stake (usually 30%), and can back the dev's next games too.
+export const AD_INVEST = {
+  title: "Ad Investment",
+  text: "We fund your game's ads for a stake in the game.",
+  cta: "Pitch your game",
+  // the deal box at the bottom of the card: what we put in vs. what we take
+  give: { label: "We invest", value: "112–160", unit: "ad credits" },
+  take: { label: "For", value: "30%", unit: "of the game" },
+  points: [
+    { key: "long", title: "Long-term partnership", text: "Not a one-off deal. We grow with you.", icon: Handshake },
+    { key: "future", title: "Future deals", text: "Ads for your next 2–5 games, plus PTR Support or full LiveOps.", icon: Layers },
+    { key: "studios", title: "Studio connections", text: "Contacts at other studios if you want to sell.", icon: Network },
+    { key: "assets", title: "Asset packs & templates", text: "Our packs and templates, when we have ones that fit.", icon: Boxes },
+  ] as LiveOpsPart[],
 };
 
 // Not offered yet: shown on Our Services as "Coming soon".
