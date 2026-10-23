@@ -519,7 +519,7 @@ function GameStage({ list, cur, vis }: { list: Game[]; cur: (g: Game) => number;
               <div className="px-3 py-2 text-[var(--x-card-fg)]">
                 <div className="truncate text-sm font-semibold">{g.name}</div>
                 <div className="flex items-center gap-1 font-[family-name:var(--x-font-mono)] text-[11px] text-[var(--x-card-muted)]">
-                  {isSold(g) ? "Built & sold" : (<><LiveDot /> {n.n.toLocaleString()}{n.unit} now</>)}
+                  <LiveDot /> {n.n.toLocaleString()}{n.unit} now
                 </div>
               </div>
             </button>
