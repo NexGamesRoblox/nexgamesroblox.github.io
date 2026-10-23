@@ -95,17 +95,20 @@ function compact(v: number): { n: number; unit: string } {
 }
 
 // How long a game has been live, from its Roblox creation date, always in months: "3 months", "13 months".
-// A started month counts as a full one (2 months 3 weeks shows as 3 months).
+// Completed months only; it rounds up to the next month once that month is a week or less away
+// (2 months 3 weeks shows as 3 months, 2 months 1 week as 2 months). Under a month it shows whole weeks.
 function lifespan(created: string): string {
   const from = new Date(created);
   const now = new Date();
   let months = (now.getFullYear() - from.getFullYear()) * 12 + now.getMonth() - from.getMonth();
   if (now.getDate() < from.getDate()) months--;
-  if (months < 1 && now.getTime() - from.getTime() < 28 * 864e5) {
+  const next = new Date(from);
+  next.setMonth(from.getMonth() + months + 1);
+  if (next.getTime() - now.getTime() <= 7 * 864e5) months++;
+  if (months < 1) {
     const weeks = Math.max(1, Math.floor((now.getTime() - from.getTime()) / 6048e5));
     return `${weeks} ${weeks === 1 ? "week" : "weeks"}`;
   }
-  if (now.getDate() !== from.getDate() || months < 1) months++;
   return `${months} ${months === 1 ? "month" : "months"}`;
 }
 
@@ -403,7 +406,7 @@ function GameStat({ value, unit, label, live }: { value: number; unit: string; l
 }
 
 // One big showcase card per game: tilting thumbnail + headline stats, sides alternate.
-function GameRow({ game, index, current, visitCount }: { game: Game; index: number; current: number; visitCount: number }) {
+function GameRow({ game, index, current, visitCount, bare = false }: { game: Game; index: number; current: number; visitCount: number; bare?: boolean }) {
   const now = compact(current);
   // the stored peak is from LiveOps' last 28 days, so never show it below what's live right now
   const ccu = compact(Math.max(game.peakCcu, current));
@@ -413,7 +416,7 @@ function GameRow({ game, index, current, visitCount }: { game: Game; index: numb
   return (
     <FadeContent blur duration={900}>
       {/* one card per game: thumbnail + details on the same surface, soft accent glow behind the thumbnail side */}
-      <div className={`group/row relative grid items-center gap-6 md:gap-10 md:grid-cols-[1.3fr_1fr] overflow-hidden rounded-[var(--x-radius)] border-2 border-[var(--x-card-border)] bg-[var(--x-card)] p-4 md:p-7 shadow-[0_24px_60px_-30px_rgba(0,0,0,0.6)] transition-[border-color,box-shadow] duration-300 hover:border-[color-mix(in_srgb,var(--x-accent)_55%,var(--x-card-border))] hover:shadow-[0_24px_70px_-28px_var(--x-accent)]`}>
+      <div className={`group/row relative grid items-center gap-6 md:gap-10 md:grid-cols-[1.3fr_1fr] overflow-hidden p-4 md:p-7 ${bare ? "" : "rounded-[var(--x-radius)] border-2 border-[var(--x-card-border)] bg-[var(--x-card)] shadow-[0_24px_60px_-30px_rgba(0,0,0,0.6)] transition-[border-color,box-shadow] duration-300 hover:border-[color-mix(in_srgb,var(--x-accent)_55%,var(--x-card-border))] hover:shadow-[0_24px_70px_-28px_var(--x-accent)]"}`}>
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-70 transition-opacity duration-500 group-hover/row:opacity-100"
@@ -455,6 +458,108 @@ function GameRow({ game, index, current, visitCount }: { game: Game; index: numb
         </div>
       </div>
     </FadeContent>
+  );
+}
+
+// "Our Games": filter + sort pills over a Stage (one big game, a strip of every game to pick from).
+type GameSort = "peak" | "now" | "visits" | "new";
+const GAME_SORTS: { key: GameSort; label: string }[] = [
+  { key: "peak", label: "Peak CCU" },
+  { key: "now", label: "Playing now" },
+  { key: "visits", label: "Visits" },
+  { key: "new", label: "Newest" },
+];
+function Pill({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`rounded-full border px-3.5 py-1.5 font-[family-name:var(--x-font-mono)] text-xs font-bold transition-colors md:text-sm ${
+        active
+          ? "border-transparent bg-[var(--x-btn-a)] text-[var(--x-on-accent)]"
+          : "border-[var(--x-card-border)] bg-[var(--x-card)] text-[var(--x-card-muted)] hover:text-[var(--x-card-fg)]"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+// D · Stage: the big card is the focus (it keeps the accent border + glow); the strip below is a separate row
+// of every game, where every game is full brightness and the picked one just has a white outline, no blue.
+function GameStage({ list, cur, vis }: { list: Game[]; cur: (g: Game) => number; vis: (g: Game) => number }) {
+  const [id, setId] = useState(list[0]?.universeId);
+  const picked = list.find((g) => g.universeId === id) ?? list[0];
+  if (!picked) return null;
+  return (
+    <div className="mt-8">
+      <div className="rounded-[var(--x-radius)] shadow-[0_24px_70px_-30px_var(--x-accent)] [&>*>div]:!border-[color-mix(in_srgb,var(--x-accent)_60%,var(--x-card-border))]">
+        <GameRow key={picked.universeId} game={picked} index={0} current={cur(picked)} visitCount={vis(picked)} />
+      </div>
+      <div className="mt-5 flex gap-3 overflow-x-auto pb-3 [scrollbar-width:thin]" role="tablist" aria-label="Pick a game">
+        {list.map((g) => {
+          const on = g.universeId === picked.universeId;
+          const n = compact(cur(g));
+          return (
+            <button
+              key={g.universeId}
+              type="button"
+              role="tab"
+              aria-selected={on}
+              onClick={() => setId(g.universeId)}
+              className={`group/t w-44 shrink-0 overflow-hidden rounded-xl border-2 bg-[var(--x-card)] text-left transition-[border-color] duration-200 md:w-52 ${on ? "border-white/80" : "border-[var(--x-card-border)] hover:border-white/40"}`}
+            >
+              <div className="relative">
+                <img src={g.thumb} alt="" loading="lazy" className={`aspect-video w-full object-cover ${isSold(g) ? "opacity-80 saturate-75" : ""}`} />
+                {isSold(g) && (
+                  <span className="absolute left-2 top-2 rounded-full bg-black/65 px-2 py-0.5 font-[family-name:var(--x-font-mono)] text-[10px] font-bold text-[var(--x-card-muted)] backdrop-blur">SOLD</span>
+                )}
+              </div>
+              <div className="px-3 py-2 text-[var(--x-card-fg)]">
+                <div className="truncate text-sm font-semibold">{g.name}</div>
+                <div className="flex items-center gap-1 font-[family-name:var(--x-font-mono)] text-[11px] text-[var(--x-card-muted)]">
+                  {isSold(g) ? "Built & sold" : (<><LiveDot /> {n.n.toLocaleString()}{n.unit} now</>)}
+                </div>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function GamesSection({ playingById, visitsById }: { playingById: Record<string, number>; visitsById: Record<string, number> }) {
+  const [filter, setFilter] = useState<"all" | "live" | "sold">("all");
+  const [sort, setSort] = useState<GameSort>("peak");
+  const cur = (g: Game) => playingById[g.universeId] ?? g.playing;
+  const vis = (g: Game) => visitsById[g.universeId] ?? g.visits;
+  const counts = { all: data.games.length, live: activeGames.length, sold: data.games.length - activeGames.length };
+  const key: Record<GameSort, (g: Game) => number> = {
+    peak: (g) => Math.max(g.peakCcu, cur(g)),
+    now: cur,
+    visits: vis,
+    new: (g) => +new Date(g.created),
+  };
+  const list = data.games
+    .filter((g) => (filter === "all" ? true : filter === "sold" ? isSold(g) : !isSold(g)))
+    .sort((a, b) => key[sort](b) - key[sort](a));
+  return (
+    <>
+      <div className="mt-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Filter games">
+          {([["all", "All"], ["live", "Live"], ["sold", "Built & sold"]] as const).map(([k, label]) => (
+            counts[k] > 0 && <Pill key={k} active={filter === k} onClick={() => setFilter(k)}>{label} · {counts[k]}</Pill>
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Sort games">
+          <span className="font-[family-name:var(--x-font-mono)] text-xs text-[var(--x-muted)]">Sort</span>
+          {GAME_SORTS.map((o) => <Pill key={o.key} active={sort === o.key} onClick={() => setSort(o.key)}>{o.label}</Pill>)}
+        </div>
+      </div>
+      <GameStage key={list.map((g) => g.universeId).join()} list={list} cur={cur} vis={vis} />
+    </>
   );
 }
 
@@ -620,11 +725,7 @@ function App() {
               <SectionTitle
                 title="Our Games"
               />
-              <div className="mt-12 flex flex-col gap-6 md:gap-8">
-                {data.games.map((g, i) => (
-                  <GameRow key={g.universeId} game={g} index={i} current={live.byId[g.universeId] ?? g.playing} visitCount={live.visitsById[g.universeId] ?? g.visits} />
-                ))}
-              </div>
+              <GamesSection playingById={live.byId} visitsById={live.visitsById} />
             </div>
           </section>
 
