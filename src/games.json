@@ -1,49 +1,49 @@
 {
-  "updatedAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
   "games": [
     {
       "name": "+1 Bite Per Click",
       "universeId": "10534873486",
       "placeId": "124731807130219",
       "peakCcu": 21462,
-      "visits": 15429706,
+      "visits": 15658107,
       "thumb": "thumbs/bite.webp",
       "genre": "Simulation",
       "created": "2026-07-20",
-      "playing": 2059
+      "playing": 1637
     },
     {
       "name": "100 Players Lava Escape",
       "universeId": "8965717730",
       "placeId": "135535794227264",
       "peakCcu": 14800,
-      "visits": 25213759,
+      "visits": 25604483,
       "thumb": "thumbs/lava.webp",
       "genre": "Obby & Platformer",
       "created": "2025-10-17",
-      "playing": 2715
+      "playing": 2205
     },
     {
       "name": "+1 Gaming Per Click",
       "universeId": "10765356488",
       "placeId": "126928947958643",
       "peakCcu": 1455,
-      "visits": 1022118,
+      "visits": 1054897,
       "thumb": "thumbs/gaming.webp",
       "genre": "Simulation",
       "created": "2026-09-06",
-      "playing": 273
+      "playing": 192
     },
     {
       "name": "Car Track TYCOON!",
       "universeId": "10769026192",
       "placeId": "130467832570440",
-      "peakCcu": 2742,
-      "visits": 564918,
+      "peakCcu": 2983,
+      "visits": 956040,
       "thumb": "thumbs/cartrack.webp",
       "genre": "Simulation",
       "created": "2026-10-02",
-      "playing": 2742,
+      "playing": 2983,
       "sold": "2026-10"
     },
     {
@@ -52,10 +52,21 @@
       "placeId": "113250049602058",
       "genre": "Simulation",
       "created": "2026-09-04",
-      "visits": 85875,
-      "playing": 256,
-      "peakCcu": 358,
+      "visits": 135239,
+      "playing": 381,
+      "peakCcu": 621,
       "thumb": "thumbs/god.webp"
+    },
+    {
+      "name": "Unbox A Treadmill",
+      "universeId": "10767771133",
+      "placeId": "120645013925187",
+      "genre": "Simulation",
+      "created": "2026-09-23",
+      "visits": 678482,
+      "playing": 860,
+      "peakCcu": 2178,
+      "thumb": "thumbs/treadmill.webp"
     }
   ]
 }
