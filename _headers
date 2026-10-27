@@ -1,0 +1,14 @@
+# Cloudflare Pages / Netlify caching rules.
+# Built JS/CSS have a content hash in the file name, so they can be cached forever.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Images keep their names when replaced, so cache them for a week.
+/ptr/*
+  Cache-Control: public, max-age=604800
+/thumbs/*
+  Cache-Control: public, max-age=604800
+/brand/*
+  Cache-Control: public, max-age=604800
+/contact/*
+  Cache-Control: public, max-age=604800
