@@ -531,9 +531,33 @@ function GameStage({ list, cur, vis }: { list: Game[]; cur: (g: Game) => number;
 }
 
 // A collapsed folder under the main Stage for the smaller portfolio games: same live numbers, compact cards.
+// Games under 100 playing right now are folded into one darkened "+N" stack card that opens them.
+const SMALL_CCU = 100;
+function PortfolioCard({ g, cur, vis, dim }: { g: Game; cur: (g: Game) => number; vis: (g: Game) => number; dim?: boolean }) {
+  const n = compact(cur(g));
+  const pk = compact(Math.max(g.peakCcu, cur(g)));
+  const v = compact(vis(g));
+  return (
+    <a href={playUrl(g)} target="_blank" rel="noreferrer" className={`group/p overflow-hidden rounded-xl border-2 border-[var(--x-card-border)] bg-[var(--x-bg)] transition-[border-color,opacity] hover:border-white/40 ${dim ? "opacity-60 hover:opacity-100" : ""}`}>
+      <img src={g.thumb} alt="" loading="lazy" className={`aspect-video w-full object-cover ${dim ? "brightness-50" : ""}`} />
+      <div className="px-3 py-2.5 text-[var(--x-card-fg)]">
+        <div className="truncate text-sm font-semibold">{g.name}</div>
+        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 font-[family-name:var(--x-font-mono)] text-[11px] text-[var(--x-card-muted)]">
+          <span className="flex items-center gap-1"><LiveDot /> {n.n.toLocaleString()}{n.unit} now</span>
+          <span>{pk.n}{pk.unit} peak</span>
+          <span>{v.n}{v.unit}+ visits</span>
+        </div>
+      </div>
+    </a>
+  );
+}
+
 function PortfolioFolder({ list, cur, vis }: { list: Game[]; cur: (g: Game) => number; vis: (g: Game) => number }) {
   const [open, setOpen] = useState(false);
+  const [stackOpen, setStackOpen] = useState(false);
   if (!list.length) return null;
+  const big = list.filter((g) => cur(g) >= SMALL_CCU);
+  const small = list.filter((g) => cur(g) < SMALL_CCU);
   return (
     <div className="mt-8 rounded-[var(--x-radius)] border-2 border-[var(--x-card-border)] bg-[var(--x-card)] p-4 md:p-5">
       <button type="button" onClick={() => setOpen(!open)} aria-expanded={open} className="flex w-full items-center justify-between gap-3 text-left text-[var(--x-card-fg)]">
@@ -545,24 +569,28 @@ function PortfolioFolder({ list, cur, vis }: { list: Game[]; cur: (g: Game) => n
       </button>
       {open && (
         <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {list.map((g) => {
-            const n = compact(cur(g));
-            const pk = compact(Math.max(g.peakCcu, cur(g)));
-            const v = compact(vis(g));
-            return (
-              <a key={g.universeId} href={playUrl(g)} target="_blank" rel="noreferrer" className="group/p overflow-hidden rounded-xl border-2 border-[var(--x-card-border)] bg-[var(--x-bg)] transition-[border-color] hover:border-white/40">
-                <img src={g.thumb} alt="" loading="lazy" className="aspect-video w-full object-cover" />
-                <div className="px-3 py-2.5 text-[var(--x-card-fg)]">
-                  <div className="truncate text-sm font-semibold">{g.name}</div>
-                  <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 font-[family-name:var(--x-font-mono)] text-[11px] text-[var(--x-card-muted)]">
-                    <span className="flex items-center gap-1"><LiveDot /> {n.n.toLocaleString()}{n.unit} now</span>
-                    <span>{pk.n}{pk.unit} peak</span>
-                    <span>{v.n}{v.unit}+ visits</span>
-                  </div>
-                </div>
-              </a>
-            );
-          })}
+          {big.map((g) => <PortfolioCard key={g.universeId} g={g} cur={cur} vis={vis} />)}
+          {small.length > 0 && (
+            <button type="button" onClick={() => setStackOpen(!stackOpen)} aria-expanded={stackOpen} title={stackOpen ? "Hide the smaller games" : "Show the smaller games"}
+              className="group/s relative overflow-hidden rounded-xl border-2 border-[var(--x-card-border)] bg-[var(--x-bg)] text-left transition-[border-color] hover:border-white/40">
+              <div className="relative aspect-video w-full overflow-hidden">
+                {small.slice(0, 4).reverse().map((g, i, arr) => {
+                  const k = arr.length - 1 - i; // 0 = front card
+                  return (
+                    <img key={g.universeId} src={g.thumb} alt="" loading="lazy"
+                      className="absolute inset-0 h-full w-full rounded-lg object-cover brightness-[.3] transition-[filter] duration-300 group-hover/s:brightness-[.45]"
+                      style={{ transform: `translate(${k * 9 - 12}%, ${8 - k * 7}%) scale(0.66) rotate(${k * 4 - 4}deg)`, transformOrigin: "center", zIndex: 10 - k, boxShadow: "0 6px 18px rgba(0,0,0,.6)", border: "2px solid rgba(255,255,255,.12)" }} />
+                  );
+                })}
+                <span className="absolute inset-0 z-20 flex items-center justify-center text-5xl font-bold text-white/90 md:text-6xl">+{small.length}</span>
+              </div>
+              <div className="px-3 py-2.5 text-[var(--x-card-fg)]">
+                <div className="truncate text-sm font-semibold">{small.length} smaller games</div>
+                <div className="mt-1 font-[family-name:var(--x-font-mono)] text-[11px] text-[var(--x-card-muted)]">under {SMALL_CCU} playing · {stackOpen ? "click to hide" : "click to show"}</div>
+              </div>
+            </button>
+          )}
+          {stackOpen && small.map((g) => <PortfolioCard key={g.universeId} g={g} cur={cur} vis={vis} dim />)}
         </div>
       )}
     </div>
