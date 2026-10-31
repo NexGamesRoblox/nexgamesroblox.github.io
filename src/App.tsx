@@ -530,19 +530,60 @@ function GameStage({ list, cur, vis }: { list: Game[]; cur: (g: Game) => number;
   );
 }
 
+// A collapsed folder under the main Stage for the smaller portfolio games: same live numbers, compact cards.
+function PortfolioFolder({ list, cur, vis }: { list: Game[]; cur: (g: Game) => number; vis: (g: Game) => number }) {
+  const [open, setOpen] = useState(false);
+  if (!list.length) return null;
+  return (
+    <div className="mt-8 rounded-[var(--x-radius)] border-2 border-[var(--x-card-border)] bg-[var(--x-card)] p-4 md:p-5">
+      <button type="button" onClick={() => setOpen(!open)} aria-expanded={open} className="flex w-full items-center justify-between gap-3 text-left text-[var(--x-card-fg)]">
+        <span className="flex items-center gap-3">
+          <span className="x-heading !normal-case text-xl md:text-2xl">Slop Portfolio</span>
+          <span className="font-[family-name:var(--x-font-mono)] text-xs font-bold text-[var(--x-card-muted)] md:text-sm">{list.length} more games</span>
+        </span>
+        <span className="font-[family-name:var(--x-font-mono)] text-sm text-[var(--x-card-muted)]">{open ? "Hide" : "Show"}</span>
+      </button>
+      {open && (
+        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {list.map((g) => {
+            const n = compact(cur(g));
+            const pk = compact(Math.max(g.peakCcu, cur(g)));
+            const v = compact(vis(g));
+            return (
+              <a key={g.universeId} href={playUrl(g)} target="_blank" rel="noreferrer" className="group/p overflow-hidden rounded-xl border-2 border-[var(--x-card-border)] bg-[var(--x-bg)] transition-[border-color] hover:border-white/40">
+                <img src={g.thumb} alt="" loading="lazy" className="aspect-video w-full object-cover" />
+                <div className="px-3 py-2.5 text-[var(--x-card-fg)]">
+                  <div className="truncate text-sm font-semibold">{g.name}</div>
+                  <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 font-[family-name:var(--x-font-mono)] text-[11px] text-[var(--x-card-muted)]">
+                    <span className="flex items-center gap-1"><LiveDot /> {n.n.toLocaleString()}{n.unit} now</span>
+                    <span>{pk.n}{pk.unit} peak</span>
+                    <span>{v.n}{v.unit}+ visits</span>
+                  </div>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function GamesSection({ playingById, visitsById }: { playingById: Record<string, number>; visitsById: Record<string, number> }) {
   const [filter, setFilter] = useState<"all" | "live" | "sold">("all");
   const [sort, setSort] = useState<GameSort>("peak");
   const cur = (g: Game) => playingById[g.universeId] ?? g.playing;
   const vis = (g: Game) => visitsById[g.universeId] ?? g.visits;
-  const counts = { all: data.games.length, live: activeGames.length, sold: data.games.length - activeGames.length };
+  const main = data.games.filter((g) => !("folder" in g));
+  const folder = data.games.filter((g) => "folder" in g);
+  const counts = { all: main.length, live: main.filter((g) => !isSold(g)).length, sold: main.length - main.filter((g) => !isSold(g)).length };
   const key: Record<GameSort, (g: Game) => number> = {
     peak: (g) => Math.max(g.peakCcu, cur(g)),
     now: cur,
     visits: vis,
     new: (g) => +new Date(g.created),
   };
-  const list = data.games
+  const list = main
     .filter((g) => (filter === "all" ? true : filter === "sold" ? isSold(g) : !isSold(g)))
     .sort((a, b) => key[sort](b) - key[sort](a));
   return (
@@ -559,6 +600,7 @@ function GamesSection({ playingById, visitsById }: { playingById: Record<string,
         </div>
       </div>
       <GameStage key={list.map((g) => g.universeId).join()} list={list} cur={cur} vis={vis} />
+      <PortfolioFolder list={folder.sort((a, b) => cur(b) - cur(a))} cur={cur} vis={vis} />
     </>
   );
 }
@@ -674,7 +716,7 @@ function App() {
                 <ModernButton href="#partner">Sell Your Game</ModernButton>
               </div>
               <LogoLoop
-                logos={data.games.map((g) => {
+                logos={data.games.filter((g) => !("folder" in g)).map((g) => {
                   const current = live.byId[g.universeId] ?? g.playing;
                   const ccu = compact(Math.max(g.peakCcu, current));
                   const v = compact(live.visitsById[g.universeId] ?? g.visits);

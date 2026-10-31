@@ -1,49 +1,50 @@
 {
-  "updatedAt": "2026-10-24",
+  "updatedAt": "2026-10-31",
   "games": [
     {
       "name": "+1 Bite Per Click",
       "universeId": "10534873486",
       "placeId": "124731807130219",
       "peakCcu": 21462,
-      "visits": 15658107,
+      "visits": 16276236,
       "thumb": "thumbs/bite.webp",
       "genre": "Simulation",
       "created": "2026-07-20",
-      "playing": 1637
+      "playing": 364
     },
     {
       "name": "100 Players Lava Escape",
       "universeId": "8965717730",
       "placeId": "135535794227264",
       "peakCcu": 14800,
-      "visits": 25604483,
+      "visits": 27370282,
       "thumb": "thumbs/lava.webp",
       "genre": "Obby & Platformer",
       "created": "2025-10-17",
-      "playing": 2205
+      "playing": 1181,
+      "folder": "portfolio"
     },
     {
       "name": "+1 Gaming Per Click",
       "universeId": "10765356488",
       "placeId": "126928947958643",
       "peakCcu": 1455,
-      "visits": 1054897,
+      "visits": 1164477,
       "thumb": "thumbs/gaming.webp",
       "genre": "Simulation",
       "created": "2026-09-06",
-      "playing": 192
+      "playing": 92
     },
     {
       "name": "Car Track TYCOON!",
       "universeId": "10769026192",
       "placeId": "130467832570440",
       "peakCcu": 2983,
-      "visits": 956040,
+      "visits": 2136164,
       "thumb": "thumbs/cartrack.webp",
       "genre": "Simulation",
       "created": "2026-10-02",
-      "playing": 2983,
+      "playing": 982,
       "sold": "2026-10"
     },
     {
@@ -52,9 +53,9 @@
       "placeId": "113250049602058",
       "genre": "Simulation",
       "created": "2026-09-04",
-      "visits": 135239,
-      "playing": 381,
-      "peakCcu": 621,
+      "visits": 501066,
+      "playing": 291,
+      "peakCcu": 916,
       "thumb": "thumbs/god.webp"
     },
     {
@@ -63,10 +64,202 @@
       "placeId": "120645013925187",
       "genre": "Simulation",
       "created": "2026-09-23",
-      "visits": 678482,
-      "playing": 860,
+      "visits": 1115208,
+      "playing": 280,
       "peakCcu": 2178,
       "thumb": "thumbs/treadmill.webp"
+    },
+    {
+      "name": "Math Glass Bridge 🧠",
+      "universeId": "9774451882",
+      "placeId": "106251887264209",
+      "genre": "Obby & Platformer",
+      "created": "2026-02-21",
+      "visits": 25916935,
+      "playing": 1246,
+      "peakCcu": 19583,
+      "thumb": "thumbs/math.webp",
+      "folder": "portfolio"
+    },
+    {
+      "name": "Brainrot Memory Bridge 🧠",
+      "universeId": "9826512841",
+      "placeId": "126842024171382",
+      "genre": "Obby & Platformer",
+      "created": "2026-03-02",
+      "visits": 6790569,
+      "playing": 152,
+      "peakCcu": 2100,
+      "thumb": "thumbs/brainrot-memory.webp",
+      "folder": "portfolio"
+    },
+    {
+      "name": "IMPOSSIBLE Memory Bridge 🧠",
+      "universeId": "9644690421",
+      "placeId": "117358254531194",
+      "genre": "Obby & Platformer",
+      "created": "2026-01-30",
+      "visits": 16211285,
+      "playing": 818,
+      "peakCcu": 4500,
+      "thumb": "thumbs/impossible-memory.webp",
+      "folder": "portfolio"
+    },
+    {
+      "name": "Logo Glass Bridge 🧠",
+      "universeId": "9644783859",
+      "placeId": "136528538641545",
+      "genre": "Obby & Platformer",
+      "created": "2026-01-30",
+      "visits": 13676949,
+      "playing": 403,
+      "peakCcu": 2500,
+      "thumb": "thumbs/logo.webp",
+      "folder": "portfolio"
+    },
+    {
+      "name": "KPop Demon Hunters Color Bridge",
+      "universeId": "9677117262",
+      "placeId": "115639168226415",
+      "genre": "Party & Casual",
+      "created": "2026-02-05",
+      "visits": 15466352,
+      "playing": 208,
+      "peakCcu": 8900,
+      "thumb": "thumbs/kpop-color.webp",
+      "folder": "portfolio"
+    },
+    {
+      "name": "Spelling Glass Bridge 🔊",
+      "universeId": "9677117942",
+      "placeId": "104151188892520",
+      "genre": "Obby & Platformer",
+      "created": "2026-02-05",
+      "visits": 9922202,
+      "playing": 167,
+      "peakCcu": 2011,
+      "thumb": "thumbs/spelling.webp",
+      "folder": "portfolio"
+    },
+    {
+      "name": "KPop Demon Hunters Glass Bridge",
+      "universeId": "9464117281",
+      "placeId": "87575075551486",
+      "genre": "Obby & Platformer",
+      "created": "2025-12-30",
+      "visits": 13170463,
+      "playing": 76,
+      "peakCcu": 1703,
+      "thumb": "thumbs/kpop-glass-2.webp",
+      "folder": "portfolio"
+    },
+    {
+      "name": "Country Glass Bridge 🌍",
+      "universeId": "9677121265",
+      "placeId": "88080689424450",
+      "genre": "Obby & Platformer",
+      "created": "2026-02-05",
+      "visits": 40977535,
+      "playing": 239,
+      "peakCcu": 540,
+      "thumb": "thumbs/country-glass.webp",
+      "folder": "portfolio"
+    },
+    {
+      "name": "Animal Hospital Glass Bridge",
+      "universeId": "10762737509",
+      "placeId": "110054453925573",
+      "genre": "Obby & Platformer",
+      "created": "2026-08-26",
+      "visits": 413716,
+      "playing": 8,
+      "peakCcu": 77,
+      "thumb": "thumbs/animal-hospital.webp",
+      "folder": "portfolio"
+    },
+    {
+      "name": "KPop Demon Hunters Glass Bridge",
+      "universeId": "8349306677",
+      "placeId": "128828223305987",
+      "genre": "Obby & Platformer",
+      "created": "2025-08-04",
+      "visits": 73632149,
+      "playing": 58,
+      "peakCcu": 544,
+      "thumb": "thumbs/kpop-glass.webp",
+      "folder": "portfolio"
+    },
+    {
+      "name": "67 Glass Bridge",
+      "universeId": "8682706929",
+      "placeId": "88824833127656",
+      "genre": "Obby & Platformer",
+      "created": "2025-09-10",
+      "visits": 13820756,
+      "playing": 7,
+      "peakCcu": 121,
+      "thumb": "thumbs/67-glass.webp",
+      "folder": "portfolio"
+    },
+    {
+      "name": "Team Sammy Glass Bridge",
+      "universeId": "8873667805",
+      "placeId": "121578598087217",
+      "genre": "Obby & Platformer",
+      "created": "2025-10-05",
+      "visits": 10369053,
+      "playing": 1,
+      "peakCcu": 574,
+      "thumb": "thumbs/team-sammy.webp",
+      "folder": "portfolio"
+    },
+    {
+      "name": "Nao Chorax Glass Bridge",
+      "universeId": "9013095745",
+      "placeId": "79045792373241",
+      "genre": "Obby & Platformer",
+      "created": "2025-10-23",
+      "visits": 7703099,
+      "playing": 75,
+      "peakCcu": 199,
+      "thumb": "thumbs/nao-chorax.webp",
+      "folder": "portfolio"
+    },
+    {
+      "name": "Teamwork Tower",
+      "universeId": "8000413855",
+      "placeId": "118891884735667",
+      "genre": "Obby & Platformer",
+      "created": "2025-06-26",
+      "visits": 99130346,
+      "playing": 544,
+      "peakCcu": 1522,
+      "thumb": "thumbs/teamwork-tower.webp",
+      "folder": "portfolio"
+    },
+    {
+      "name": "Teamwork Tower 2",
+      "universeId": "8169861485",
+      "placeId": "91193393488569",
+      "genre": "Obby & Platformer",
+      "created": "2025-07-15",
+      "visits": 76868698,
+      "playing": 472,
+      "peakCcu": 1300,
+      "thumb": "thumbs/teamwork-tower-2.webp",
+      "folder": "portfolio"
+    },
+    {
+      "name": "Climb KPop Demon Hunters Tower",
+      "universeId": "9903325235",
+      "placeId": "90053646552411",
+      "genre": "Obby & Platformer",
+      "created": "2026-03-18",
+      "visits": 78901155,
+      "playing": 252,
+      "peakCcu": 3999,
+      "thumb": "thumbs/climb-kpop-tower.webp",
+      "folder": "portfolio"
     }
   ]
 }
