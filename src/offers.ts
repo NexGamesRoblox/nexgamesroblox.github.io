@@ -6,6 +6,7 @@ export const PTR_SUPPORT = {
   subtitle: "Thumbnail Support",
   text: "Thumbnails and icons made to get clicked. We test multiple layouts and concepts, then do iterative work on the best-performing thumbnails to raise your play-through rate.",
   steps: ["Test layouts & concepts", "Find the best performers", "Iterate"],
+  bookedLabel: "Fully booked",
   // pricing options shown on the PTR Support card (USD)
   plans: [
     { key: "weekly", name: "Weekly PTR Support", price: "$150", per: "/ week", note: "Ongoing thumbnail testing and iteration" },

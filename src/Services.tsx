@@ -14,36 +14,22 @@ type OpenFn = (index: number) => void;
 // 640px preview copy of a PTR image (full size only loads in the viewer)
 const small = (src: string) => src.replace(/\.webp$/, "-sm.webp");
 
-// The two PTR Support price options, side by side; the first is featured (gradient rim + tag). Clicking one goes to Contact.
+// The two PTR Support price options, side by side. Fully booked: quiet cards, prices crossed out, not clickable.
 function PtrPricing({ className = "" }: { className?: string }) {
   return (
     <div className={`grid gap-3 pt-2 sm:grid-cols-2 ${className}`}>
-      {PTR_SUPPORT.plans.map((p, i) => (
-        <a
-          key={p.key}
-          href="#contact"
-          onClick={(e) => e.stopPropagation()}
-          className={`group/plan relative flex flex-col rounded-[calc(var(--x-radius)*0.7)] p-4 transition-colors ${
-            i === 0 ? "x-rim" : "border border-[var(--x-card-border)] hover:border-[color-mix(in_srgb,var(--x-accent)_60%,transparent)]"
-          }`}
-        >
-          {i === 0 && (
-            <span className="absolute -top-2.5 right-3 rounded-full bg-[linear-gradient(90deg,var(--x-btn-a),var(--x-btn-b))] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--x-on-accent)] shadow-lg">
-              Most popular
-            </span>
-          )}
-          <span className="text-sm font-semibold">{p.name}</span>
-          <span className="mt-1 flex items-baseline gap-1.5">
-            {i === 0 ? (
-              // featured plan: white → silver metallic price with a passing glint
-              <span className="x-heading x-silver-text !normal-case !tracking-tight text-4xl leading-[1.15] tabular-nums drop-shadow-[0_0_12px_rgba(255,255,255,0.18)]">{p.price}</span>
-            ) : (
-              <span className="x-heading !normal-case !tracking-normal text-3xl tabular-nums">{p.price}</span>
-            )}
-            <span className="text-sm text-[var(--x-card-muted)]">{p.per}</span>
+      {PTR_SUPPORT.plans.map((p) => (
+        <div key={p.key} className="relative flex flex-col rounded-[calc(var(--x-radius)*0.7)] border border-[var(--x-card-border)] p-4">
+          <span className="absolute -top-2.5 right-3 rounded-full border border-[var(--x-card-border)] bg-[var(--x-card)] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--x-card-fg)]">
+            {PTR_SUPPORT.bookedLabel}
+          </span>
+          <span className="text-sm font-semibold text-[var(--x-card-muted)]">{p.name}</span>
+          <span className="mt-1 flex items-baseline gap-1.5 text-[var(--x-card-muted)]">
+            <s className="x-heading !normal-case !tracking-normal text-3xl tabular-nums">{p.price}</s>
+            <span className="text-sm">{p.per}</span>
           </span>
           <span className="mt-1 text-xs text-[var(--x-card-muted)]">{p.note}</span>
-        </a>
+        </div>
       ))}
     </div>
   );
