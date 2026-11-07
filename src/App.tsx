@@ -802,10 +802,10 @@ function App() {
           {/* ── Moving banner ─────────────────────────────── */}
           <div aria-hidden className="py-10 md:py-14 overflow-hidden">
             <ScrollVelocity
-              texts={["LiveOps ✦ Thumbnails ✦ Updates ✦ ", "PTR ✦ Concepts ✦ Monetization ✦ "]}
+              texts={["LiveOps ✦ Thumbnails ✦ Updates ✦", "PTR ✦ Concepts ✦ Monetization ✦"]}
               velocity={40}
               numCopies={4}
-              className="x-heading px-2 text-5xl md:text-8xl text-[var(--x-dim)]"
+              className="x-heading text-5xl md:text-8xl text-[var(--x-dim)]"
               parallaxClassName="relative overflow-hidden py-1"
               scrollerClassName="flex whitespace-nowrap"
             />
