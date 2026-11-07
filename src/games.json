@@ -1,27 +1,27 @@
 {
-  "updatedAt": "2026-11-03",
+  "updatedAt": "2026-11-07",
   "games": [
     {
       "name": "+1 Bite Per Click",
       "universeId": "10534873486",
       "placeId": "124731807130219",
       "peakCcu": 21462,
-      "visits": 16380153,
+      "visits": 16477295,
       "thumb": "thumbs/bite.webp",
       "genre": "Simulation",
       "created": "2026-07-20",
-      "playing": 226
+      "playing": 269
     },
     {
       "name": "100 Players Lava Escape",
       "universeId": "8965717730",
       "placeId": "135535794227264",
       "peakCcu": 14800,
-      "visits": 27945903,
+      "visits": 28542040,
       "thumb": "thumbs/lava.webp",
       "genre": "Obby & Platformer",
       "created": "2025-10-17",
-      "playing": 1281,
+      "playing": 1113,
       "folder": "portfolio"
     },
     {
@@ -29,22 +29,22 @@
       "universeId": "10765356488",
       "placeId": "126928947958643",
       "peakCcu": 1455,
-      "visits": 1192393,
+      "visits": 1230518,
       "thumb": "thumbs/gaming.webp",
       "genre": "Simulation",
       "created": "2026-09-06",
-      "playing": 75
+      "playing": 57
     },
     {
       "name": "Car Track TYCOON!",
       "universeId": "10769026192",
       "placeId": "130467832570440",
       "peakCcu": 2983,
-      "visits": 2353841,
+      "visits": 2478008,
       "thumb": "thumbs/cartrack.webp",
       "genre": "Simulation",
       "created": "2026-10-02",
-      "playing": 436,
+      "playing": 213,
       "sold": "2026-10"
     },
     {
@@ -53,10 +53,21 @@
       "placeId": "113250049602058",
       "genre": "Simulation",
       "created": "2026-09-04",
-      "visits": 603923,
-      "playing": 136,
+      "visits": 671453,
+      "playing": 101,
       "peakCcu": 916,
       "thumb": "thumbs/god.webp"
+    },
+    {
+      "name": "+1 Capybara Evolution",
+      "universeId": "10668037978",
+      "placeId": "92613178318851",
+      "peakCcu": 388,
+      "visits": 135282,
+      "thumb": "thumbs/capybara.webp",
+      "genre": "Simulation",
+      "created": "2026-08-09",
+      "playing": 388
     },
     {
       "name": "Unbox A Treadmill",
@@ -64,8 +75,8 @@
       "placeId": "120645013925187",
       "genre": "Simulation",
       "created": "2026-09-23",
-      "visits": 1189734,
-      "playing": 105,
+      "visits": 1254135,
+      "playing": 81,
       "peakCcu": 2178,
       "thumb": "thumbs/treadmill.webp"
     },
@@ -75,8 +86,8 @@
       "placeId": "106251887264209",
       "genre": "Obby & Platformer",
       "created": "2026-02-21",
-      "visits": 26584580,
-      "playing": 944,
+      "visits": 27256079,
+      "playing": 924,
       "peakCcu": 19583,
       "thumb": "thumbs/math.webp",
       "folder": "portfolio"
@@ -87,8 +98,8 @@
       "placeId": "126842024171382",
       "genre": "Obby & Platformer",
       "created": "2026-03-02",
-      "visits": 6922445,
-      "playing": 444,
+      "visits": 7080434,
+      "playing": 220,
       "peakCcu": 6018,
       "thumb": "thumbs/brainrot-memory.webp",
       "folder": "portfolio"
@@ -99,8 +110,8 @@
       "placeId": "117358254531194",
       "genre": "Obby & Platformer",
       "created": "2026-01-30",
-      "visits": 16539311,
-      "playing": 1283,
+      "visits": 16982445,
+      "playing": 1147,
       "peakCcu": 4500,
       "thumb": "thumbs/impossible-memory.webp",
       "folder": "portfolio"
@@ -111,8 +122,8 @@
       "placeId": "136528538641545",
       "genre": "Obby & Platformer",
       "created": "2026-01-30",
-      "visits": 13814345,
-      "playing": 194,
+      "visits": 13992080,
+      "playing": 374,
       "peakCcu": 2500,
       "thumb": "thumbs/logo.webp",
       "folder": "portfolio"
@@ -123,8 +134,8 @@
       "placeId": "115639168226415",
       "genre": "Party & Casual",
       "created": "2026-02-05",
-      "visits": 15594930,
-      "playing": 214,
+      "visits": 15779400,
+      "playing": 271,
       "peakCcu": 8900,
       "thumb": "thumbs/kpop-color.webp",
       "folder": "portfolio"
@@ -135,8 +146,8 @@
       "placeId": "104151188892520",
       "genre": "Obby & Platformer",
       "created": "2026-02-05",
-      "visits": 10006564,
-      "playing": 99,
+      "visits": 10105705,
+      "playing": 89,
       "peakCcu": 2011,
       "thumb": "thumbs/spelling.webp",
       "folder": "portfolio"
@@ -147,8 +158,8 @@
       "placeId": "87575075551486",
       "genre": "Obby & Platformer",
       "created": "2025-12-30",
-      "visits": 13212366,
-      "playing": 51,
+      "visits": 13249035,
+      "playing": 56,
       "peakCcu": 1703,
       "thumb": "thumbs/kpop-glass-2.webp",
       "folder": "portfolio"
@@ -159,8 +170,8 @@
       "placeId": "88080689424450",
       "genre": "Obby & Platformer",
       "created": "2026-02-05",
-      "visits": 41128926,
-      "playing": 359,
+      "visits": 41451007,
+      "playing": 408,
       "peakCcu": 540,
       "thumb": "thumbs/country-glass.webp",
       "folder": "portfolio"
@@ -171,8 +182,8 @@
       "placeId": "110054453925573",
       "genre": "Obby & Platformer",
       "created": "2026-08-26",
-      "visits": 416154,
-      "playing": 4,
+      "visits": 418741,
+      "playing": 6,
       "peakCcu": 77,
       "thumb": "thumbs/animal-hospital.webp",
       "folder": "portfolio"
@@ -183,7 +194,7 @@
       "placeId": "128828223305987",
       "genre": "Obby & Platformer",
       "created": "2025-08-04",
-      "visits": 73669771,
+      "visits": 73711715,
       "playing": 88,
       "peakCcu": 544,
       "thumb": "thumbs/kpop-glass.webp",
@@ -195,8 +206,8 @@
       "placeId": "88824833127656",
       "genre": "Obby & Platformer",
       "created": "2025-09-10",
-      "visits": 13837643,
-      "playing": 30,
+      "visits": 13857947,
+      "playing": 42,
       "peakCcu": 121,
       "thumb": "thumbs/67-glass.webp",
       "folder": "portfolio"
@@ -207,8 +218,8 @@
       "placeId": "121578598087217",
       "genre": "Obby & Platformer",
       "created": "2025-10-05",
-      "visits": 10370266,
-      "playing": 2,
+      "visits": 10371387,
+      "playing": 0,
       "peakCcu": 574,
       "thumb": "thumbs/team-sammy.webp",
       "folder": "portfolio"
@@ -219,8 +230,8 @@
       "placeId": "79045792373241",
       "genre": "Obby & Platformer",
       "created": "2025-10-23",
-      "visits": 7724340,
-      "playing": 33,
+      "visits": 7750323,
+      "playing": 89,
       "peakCcu": 199,
       "thumb": "thumbs/nao-chorax.webp",
       "folder": "portfolio"
@@ -231,8 +242,8 @@
       "placeId": "118891884735667",
       "genre": "Obby & Platformer",
       "created": "2025-06-26",
-      "visits": 99652030,
-      "playing": 524,
+      "visits": 100191543,
+      "playing": 785,
       "peakCcu": 1720,
       "thumb": "thumbs/teamwork-tower.webp",
       "folder": "portfolio"
@@ -243,8 +254,8 @@
       "placeId": "91193393488569",
       "genre": "Obby & Platformer",
       "created": "2025-07-15",
-      "visits": 77157022,
-      "playing": 330,
+      "visits": 77461118,
+      "playing": 404,
       "peakCcu": 1300,
       "thumb": "thumbs/teamwork-tower-2.webp",
       "folder": "portfolio"
@@ -255,8 +266,8 @@
       "placeId": "90053646552411",
       "genre": "Obby & Platformer",
       "created": "2026-03-18",
-      "visits": 79069301,
-      "playing": 236,
+      "visits": 79289415,
+      "playing": 441,
       "peakCcu": 3999,
       "thumb": "thumbs/climb-kpop-tower.webp",
       "folder": "portfolio"
@@ -267,8 +278,8 @@
       "placeId": "101701095979275",
       "genre": "Obby & Platformer",
       "created": "2026-05-04",
-      "visits": 2683939,
-      "playing": 105,
+      "visits": 2773691,
+      "playing": 192,
       "peakCcu": 224,
       "thumb": "thumbs/kpop-teamwork-tower.webp",
       "folder": "portfolio"
@@ -279,8 +290,8 @@
       "placeId": "122892536380985",
       "genre": "Obby & Platformer",
       "created": "2025-07-23",
-      "visits": 22467690,
-      "playing": 48,
+      "visits": 22538608,
+      "playing": 30,
       "peakCcu": 272,
       "thumb": "thumbs/no-jumping-tower.webp",
       "folder": "portfolio"
@@ -291,8 +302,8 @@
       "placeId": "95264113938067",
       "genre": "Obby & Platformer",
       "created": "2025-08-09",
-      "visits": 8039505,
-      "playing": 22,
+      "visits": 8069288,
+      "playing": 44,
       "peakCcu": 105,
       "thumb": "thumbs/teamwork-troll-tower.webp",
       "folder": "portfolio"
@@ -303,8 +314,8 @@
       "placeId": "98022756774264",
       "genre": "Obby & Platformer",
       "created": "2026-04-11",
-      "visits": 2097646,
-      "playing": 14,
+      "visits": 2112845,
+      "playing": 16,
       "peakCcu": 62,
       "thumb": "thumbs/poppy-teamwork-tower.webp",
       "folder": "portfolio"
@@ -314,11 +325,11 @@
       "universeId": "10753847141",
       "placeId": "74138649591015",
       "peakCcu": 4722,
-      "visits": 1702661,
+      "visits": 2692659,
       "thumb": "thumbs/meet-spiderman.webp",
       "genre": "Obby & Platformer",
       "created": "2026-08-22",
-      "playing": 3465,
+      "playing": 397,
       "folder": "portfolio"
     },
     {
@@ -326,11 +337,11 @@
       "universeId": "9010856578",
       "placeId": "139029941263197",
       "peakCcu": 538,
-      "visits": 4119952,
+      "visits": 4243963,
       "thumb": "thumbs/99-nights-jump-rope.webp",
       "genre": "Obby & Platformer",
       "created": "2025-10-23",
-      "playing": 307,
+      "playing": 170,
       "folder": "portfolio"
     },
     {
@@ -338,11 +349,11 @@
       "universeId": "10754101400",
       "placeId": "125398197595428",
       "peakCcu": 1266,
-      "visits": 1031195,
+      "visits": 1171584,
       "thumb": "thumbs/enter-verity.webp",
       "genre": "Obby & Platformer",
       "created": "2026-08-22",
-      "playing": 265,
+      "playing": 402,
       "folder": "portfolio"
     },
     {
@@ -350,11 +361,11 @@
       "universeId": "9011050648",
       "placeId": "98520674214279",
       "peakCcu": 612,
-      "visits": 15369010,
+      "visits": 15501660,
       "thumb": "thumbs/kpop-jump-rope.webp",
       "genre": "Obby & Platformer",
       "created": "2025-10-23",
-      "playing": 250,
+      "playing": 223,
       "folder": "portfolio"
     },
     {
@@ -362,11 +373,11 @@
       "universeId": "10120106682",
       "placeId": "90839208774315",
       "peakCcu": 496,
-      "visits": 9635696,
+      "visits": 9737211,
       "thumb": "thumbs/meet-caylus.webp",
       "genre": "Obby & Platformer",
       "created": "2026-05-03",
-      "playing": 185,
+      "playing": 252,
       "folder": "portfolio"
     },
     {
@@ -374,11 +385,11 @@
       "universeId": "9472855818",
       "placeId": "102559192923676",
       "peakCcu": 446,
-      "visits": 1535729,
+      "visits": 1601813,
       "thumb": "thumbs/jump-into-67.webp",
       "genre": "Obby & Platformer",
       "created": "2025-12-31",
-      "playing": 162,
+      "playing": 7,
       "folder": "portfolio"
     },
     {
@@ -386,11 +397,11 @@
       "universeId": "9488991674",
       "placeId": "127849731915912",
       "peakCcu": 525,
-      "visits": 5469393,
+      "visits": 5652290,
       "thumb": "thumbs/climb-zootopia-2.webp",
       "genre": "Obby & Platformer",
       "created": "2026-01-02",
-      "playing": 169,
+      "playing": 389,
       "folder": "portfolio"
     },
     {
@@ -398,11 +409,11 @@
       "universeId": "10037428649",
       "placeId": "91968151059915",
       "peakCcu": 319,
-      "visits": 1424727,
+      "visits": 1538921,
       "thumb": "thumbs/stairs-kpop.webp",
       "genre": "Obby & Platformer",
       "created": "2026-04-14",
-      "playing": 131,
+      "playing": 5,
       "folder": "portfolio"
     },
     {
@@ -410,11 +421,11 @@
       "universeId": "10345973434",
       "placeId": "110258689303216",
       "peakCcu": 349,
-      "visits": 6433609,
+      "visits": 6575742,
       "thumb": "thumbs/100-players-glass-bridge.webp",
       "genre": "Obby & Platformer",
       "created": "2026-06-17",
-      "playing": 189,
+      "playing": 213,
       "folder": "portfolio"
     }
   ]
