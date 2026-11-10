@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig, type Plugin } from "vite";
@@ -15,7 +16,7 @@ const CSP = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", // components inject <style>/style attributes
   "font-src 'self' https://fonts.gstatic.com",
   "img-src 'self' data: blob:",
-  "connect-src 'self' https://roterminal.co",
+  "connect-src 'self' https://api.nexgames.dev https://roterminal.co",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'none'",
@@ -39,10 +40,23 @@ function securityHeaders(): Plugin {
   };
 }
 
+// Publishes the site's universe ids as /live-ids.json; the live-count Worker (worker/) reads it, so
+// adding a game to games.json never needs a Worker change.
+function liveIds(): Plugin {
+  return {
+    name: "live-ids",
+    apply: "build",
+    generateBundle() {
+      const games = JSON.parse(fs.readFileSync(path.resolve(__dirname, "src/games.json"), "utf8")).games;
+      this.emitFile({ type: "asset", fileName: "live-ids.json", source: JSON.stringify(games.map((g: { universeId: string }) => g.universeId)) });
+    },
+  };
+}
+
 export default defineConfig({
   // relative asset URLs so the build works from a sub-folder (GitHub Pages: user.github.io/repo/) and at a domain root
   base: "./",
-  plugins: [react(), tailwindcss(), securityHeaders()],
+  plugins: [react(), tailwindcss(), securityHeaders(), liveIds()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
