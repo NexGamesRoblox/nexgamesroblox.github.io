@@ -15,7 +15,7 @@ const CSP = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", // components inject <style>/style attributes
   "font-src 'self' https://fonts.gstatic.com",
   "img-src 'self' data: blob:",
-  "connect-src 'self' https://games.roproxy.com",
+  "connect-src 'self' https://roterminal.co",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'none'",

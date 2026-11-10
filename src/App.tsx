@@ -112,18 +112,19 @@ function lifespan(created: string): string {
   return `${months} ${months === 1 ? "month" : "months"}`;
 }
 
-// Live player counts and visits (per game + total). Roblox's API has no CORS, so read it through the
-// roproxy mirror; until it answers (or if it fails) show the snapshot from npm run update-stats.
+// Live player counts (per game + total) from RoTerminal's free live endpoint: no key, CORS open,
+// up to 10 games per call, 12 calls a minute per visitor, and it doesn't use the 50-a-day allowance.
+// RoTerminal has no visits, so visits stay the snapshot from npm run update-stats.
 type LivePlaying = { total: number; byId: Record<string, number>; visits: number; visitsById: Record<string, number> };
 
-// Live counts come from a third-party mirror, so treat the response as untrusted:
+// Live counts come from a third-party API, so treat the response as untrusted:
 // - only our own universe IDs are read, and only as plain numbers within a sane range
 // - each request times out, failures back off (1 → 2 → 4 → 10 min), and polling pauses while the
 //   tab is hidden, so the page never hammers the API (and can't be used to)
 // - on any problem the last good value (or the build-time snapshot) stays on screen
-const LIVE_URL = "https://games.roproxy.com/v1/games";
+const LIVE_URL = "https://roterminal.co/api/v1/games/live";
+const LIVE_BATCH = 10; // RoTerminal's max games per call
 const MAX_PLAYING = 5_000_000; // more than any Roblox game has ever had; anything above is bogus
-const MAX_VISITS = 1e11;
 const sum = (r: Record<string, number>) => Object.values(r).reduce((s, n) => s + n, 0);
 
 function useLivePlaying(): LivePlaying {
@@ -135,32 +136,39 @@ function useLivePlaying(): LivePlaying {
   const [live, setLive] = useState<LivePlaying>(snapshot);
   useEffect(() => {
     const ours = new Set(data.games.map((g) => g.universeId));
-    const url = `${LIVE_URL}?universeIds=${encodeURIComponent([...ours].join(","))}`;
+    const ids = [...ours];
+    const urls: string[] = [];
+    for (let i = 0; i < ids.length; i += LIVE_BATCH) urls.push(`${LIVE_URL}?games=${encodeURIComponent(ids.slice(i, i + LIVE_BATCH).join(","))}`);
     let timer: ReturnType<typeof setTimeout> | undefined;
     let failures = 0;
     let stopped = false;
+    let latest: Record<string, number> = {}; // last good live count per game, kept if a later batch fails
 
-    const parse = (j: unknown): LivePlaying | null => {
-      const rows = (j as { data?: unknown })?.data;
+    const parse = (j: unknown): Record<string, number> | null => {
+      const rows = (j as { data?: { games?: unknown } })?.data?.games;
       if (!Array.isArray(rows)) return null;
-      const ok = (n: unknown, max: number): n is number => typeof n === "number" && Number.isInteger(n) && n >= 0 && n <= max;
       const byId: Record<string, number> = {};
-      const visitsById: Record<string, number> = {};
       for (const row of rows) {
         const id = String((row as { id?: unknown })?.id ?? "");
         if (!ours.has(id)) continue;
-        const n = (row as { playing?: unknown })?.playing;
-        const v = (row as { visits?: unknown })?.visits;
-        if (ok(n, MAX_PLAYING)) byId[id] = n;
-        if (ok(v, MAX_VISITS)) visitsById[id] = v;
+        const n = (row as { playing_now?: unknown })?.playing_now;
+        if (typeof n === "number" && Number.isInteger(n) && n >= 0 && n <= MAX_PLAYING) byId[id] = n;
       }
-      if (Object.keys(byId).length === 0 && Object.keys(visitsById).length === 0) return null;
-      const base = snapshot();
-      const mergedPlaying = { ...base.byId, ...byId };
-      // visits only ever go up; never drop below the build-time snapshot
-      const mergedVisits = { ...base.visitsById };
-      for (const [id, v] of Object.entries(visitsById)) mergedVisits[id] = Math.max(mergedVisits[id], v);
-      return { total: sumActive(mergedPlaying), byId: mergedPlaying, visits: sumActive(mergedVisits), visitsById: mergedVisits };
+      return Object.keys(byId).length ? byId : null;
+    };
+
+    const fetchBatch = async (url: string) => {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 8000);
+      try {
+        const r = await fetch(url, { signal: ctrl.signal, credentials: "omit", referrerPolicy: "no-referrer", cache: "no-store" });
+        if (!r.ok || !(r.headers.get("content-type") ?? "").includes("json")) throw new Error(String(r.status));
+        const byId = parse(await r.json());
+        if (!byId) throw new Error("bad data");
+        return byId;
+      } finally {
+        clearTimeout(t);
+      }
     };
 
     const schedule = (ms: number) => {
@@ -170,22 +178,19 @@ function useLivePlaying(): LivePlaying {
 
     const load = async () => {
       if (document.hidden) return; // resumes on visibilitychange
-      const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 8000);
-      try {
-        const r = await fetch(url, { signal: ctrl.signal, credentials: "omit", referrerPolicy: "no-referrer", cache: "no-store" });
-        if (!r.ok || !(r.headers.get("content-type") ?? "").includes("json")) throw new Error(String(r.status));
-        const next = parse(await r.json());
-        if (!next) throw new Error("bad data");
-        failures = 0;
-        if (!stopped) setLive(next);
-        schedule(60_000);
-      } catch {
+      const results = await Promise.allSettled(urls.map(fetchBatch));
+      const got = results.filter((r): r is PromiseFulfilledResult<Record<string, number>> => r.status === "fulfilled");
+      if (got.length === 0) {
         failures++;
         schedule(Math.min(60_000 * 2 ** (failures - 1), 600_000));
-      } finally {
-        clearTimeout(t);
+        return;
       }
+      failures = 0;
+      for (const r of got) latest = { ...latest, ...r.value };
+      const base = snapshot();
+      const byId = { ...base.byId, ...latest };
+      if (!stopped) setLive({ ...base, total: sumActive(byId), byId });
+      schedule(60_000);
     };
 
     const onVisible = () => { if (!document.hidden) schedule(0); };
