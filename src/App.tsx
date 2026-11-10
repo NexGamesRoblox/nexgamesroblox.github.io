@@ -112,11 +112,9 @@ function lifespan(created: string): string {
   return `${months} ${months === 1 ? "month" : "months"}`;
 }
 
-// Live player counts and visits (per game + total). First choice is our own Cloudflare Worker
-// (worker/, api.nexgames.dev): Roblox's games API cached 60 s, players + visits. If it fails, player
-// counts come from RoTerminal's free live endpoint (no key, CORS open, 10 games a call, 12 calls a
-// minute per visitor, not in the 50-a-day allowance; no visits). Until either answers, or if both
-// fail, the snapshot from npm run update-stats stays on screen.
+// Live player counts (per game + total) from RoTerminal's free live endpoint: no key, CORS open,
+// up to 10 games per call, 12 calls a minute per visitor, and it doesn't use the 50-a-day allowance.
+// RoTerminal has no visits, so visits stay the snapshot from npm run update-stats.
 type LivePlaying = { total: number; byId: Record<string, number>; visits: number; visitsById: Record<string, number> };
 
 // Live counts come from a third-party API, so treat the response as untrusted:
@@ -124,11 +122,9 @@ type LivePlaying = { total: number; byId: Record<string, number>; visits: number
 // - each request times out, failures back off (1 → 2 → 4 → 10 min), and polling pauses while the
 //   tab is hidden, so the page never hammers the API (and can't be used to)
 // - on any problem the last good value (or the build-time snapshot) stays on screen
-const WORKER_URL = "https://api.nexgames.dev/live";
 const LIVE_URL = "https://roterminal.co/api/v1/games/live";
 const LIVE_BATCH = 10; // RoTerminal's max games per call
 const MAX_PLAYING = 5_000_000; // more than any Roblox game has ever had; anything above is bogus
-const MAX_VISITS = 1e11;
 const sum = (r: Record<string, number>) => Object.values(r).reduce((s, n) => s + n, 0);
 
 function useLivePlaying(): LivePlaying {
@@ -161,40 +157,18 @@ function useLivePlaying(): LivePlaying {
       return Object.keys(byId).length ? byId : null;
     };
 
-    const getJson = async (url: string): Promise<unknown> => {
+    const fetchBatch = async (url: string) => {
       const ctrl = new AbortController();
       const t = setTimeout(() => ctrl.abort(), 8000);
       try {
-        const r = await fetch(url, { signal: ctrl.signal, credentials: "omit", referrerPolicy: "no-referrer" });
+        const r = await fetch(url, { signal: ctrl.signal, credentials: "omit", referrerPolicy: "no-referrer", cache: "no-store" });
         if (!r.ok || !(r.headers.get("content-type") ?? "").includes("json")) throw new Error(String(r.status));
-        return await r.json();
+        const byId = parse(await r.json());
+        if (!byId) throw new Error("bad data");
+        return byId;
       } finally {
         clearTimeout(t);
       }
-    };
-    const fetchBatch = async (url: string) => {
-      const byId = parse(await getJson(url));
-      if (!byId) throw new Error("bad data");
-      return byId;
-    };
-
-    // our Worker: { games: [{ id, playing, visits }] }
-    const okNum = (n: unknown, max: number): n is number => typeof n === "number" && Number.isInteger(n) && n >= 0 && n <= max;
-    let latestVisits: Record<string, number> = {};
-    const fromWorker = async () => {
-      const rows = ((await getJson(WORKER_URL)) as { games?: unknown })?.games;
-      if (!Array.isArray(rows)) throw new Error("bad data");
-      const byId: Record<string, number> = {};
-      const visitsById: Record<string, number> = {};
-      for (const row of rows) {
-        const id = String((row as { id?: unknown })?.id ?? "");
-        if (!ours.has(id)) continue;
-        const { playing, visits } = row as { playing?: unknown; visits?: unknown };
-        if (okNum(playing, MAX_PLAYING)) byId[id] = playing;
-        if (okNum(visits, MAX_VISITS)) visitsById[id] = visits;
-      }
-      if (!Object.keys(byId).length) throw new Error("no rows");
-      return { byId, visitsById };
     };
 
     const schedule = (ms: number) => {
@@ -204,20 +178,6 @@ function useLivePlaying(): LivePlaying {
 
     const load = async () => {
       if (document.hidden) return; // resumes on visibilitychange
-      try {
-        const w = await fromWorker();
-        failures = 0;
-        latest = { ...latest, ...w.byId };
-        latestVisits = { ...latestVisits, ...w.visitsById };
-        const base = snapshot();
-        const byId = { ...base.byId, ...latest };
-        // visits only ever go up; never drop below the build-time snapshot
-        const visitsById = { ...base.visitsById };
-        for (const [id, v] of Object.entries(latestVisits)) visitsById[id] = Math.max(visitsById[id] ?? 0, v);
-        if (!stopped) setLive({ total: sumActive(byId), byId, visits: sumActive(visitsById), visitsById });
-        schedule(60_000);
-        return;
-      } catch { /* fall back to RoTerminal */ }
       const results = await Promise.allSettled(urls.map(fetchBatch));
       const got = results.filter((r): r is PromiseFulfilledResult<Record<string, number>> => r.status === "fulfilled");
       if (got.length === 0) {
@@ -229,9 +189,7 @@ function useLivePlaying(): LivePlaying {
       for (const r of got) latest = { ...latest, ...r.value };
       const base = snapshot();
       const byId = { ...base.byId, ...latest };
-      const visitsById = { ...base.visitsById };
-      for (const [id, v] of Object.entries(latestVisits)) visitsById[id] = Math.max(visitsById[id] ?? 0, v);
-      if (!stopped) setLive({ total: sumActive(byId), byId, visits: sumActive(visitsById), visitsById });
+      if (!stopped) setLive({ ...base, total: sumActive(byId), byId });
       schedule(60_000);
     };
 
